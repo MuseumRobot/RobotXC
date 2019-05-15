@@ -3,9 +3,9 @@
 
 #include <QtGui/QMainWindow>
 #include "ui_robotxc.h"
+#include "XCVoice.h"
 
-class RobotXC : public QMainWindow
-{
+class RobotXC : public QMainWindow{
 	Q_OBJECT
 
 public:
@@ -14,6 +14,10 @@ public:
 
 private:
 	Ui::RobotXCClass ui;
+	XCVoice m_voice;
+
+private slots:
+	void OnBtnRecord();
 };
 
 #endif // ROBOTXC_H

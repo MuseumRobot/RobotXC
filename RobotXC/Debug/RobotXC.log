@@ -1,34 +1,32 @@
-﻿生成启动时间为 2019/5/9 16:13:46。
+﻿生成启动时间为 2019/5/15 22:47:50。
      1>项目“C:\Users\Administor\Documents\RobotXC\RobotXC\RobotXC.vcxproj”在节点 2 上(build 个目标)。
-     1>PrepareForBuild:
-         正在创建目录“C:\Users\Administor\Documents\RobotXC\Win32\Debug\”。
-       InitializeBuildStatus:
-         正在创建“Debug\RobotXC.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+     1>InitializeBuildStatus:
+         正在对“Debug\RobotXC.unsuccessfulbuild”执行 Touch 任务。
        CustomBuild:
          Moc'ing RobotXC.h...
-         Uic'ing robotxc.ui...
-         Rcc'ing robotxc.qrc...
-     1>RCC : warning : No resources in 'C:\Users\Administor\Documents\RobotXC\RobotXC\robotxc.qrc'.
-         
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.6\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.6\include\QtCore /IC:\Qt\4.8.6\include\QtGui /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\RobotXC.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.6\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.6\include\QtCore /IC:\Qt\4.8.6\include\QtGui /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\RobotXC.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\Debug\moc_RobotXC.cpp main.cpp RobotXC.cpp
+         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.6\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.6\include\QtCore /IC:\Qt\4.8.6\include\QtGui /IC:\Qt\4.8.6\include\QtTest /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\RobotXC.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\Debug\moc_RobotXC.cpp main.cpp RobotXC.cpp XCVoice.cpp
          moc_RobotXC.cpp
          main.cpp
          RobotXC.cpp
+         XCVoice.cpp
          正在生成代码...
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.6\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.6\include\QtCore /IC:\Qt\4.8.6\include\QtGui /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\qrc_robotxc.cpp
-         qrc_robotxc.cpp
+         所有输出均为最新。
        ResourceCompile:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /l"0x0409" /nologo /fo"Debug\RobotXC.res" RobotXC.rc 
+         所有输出均为最新。
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\\RobotXC.exe" /NOLOGO /LIBPATH:C:\Qt\4.8.6\lib qtmaind.lib QtCored4.lib QtGuid4.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\RobotXC.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\RobotXC.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\RobotXC.lib" /MACHINE:X86 Debug\RobotXC.res
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\\RobotXC.exe" /NOLOGO /LIBPATH:.\lib /LIBPATH:C:\Qt\4.8.6\lib hci_sys.lib hci_asr_recorder.lib hci_tts_player.lib qtmaind.lib QtCored4.lib QtGuid4.lib QtTestd4.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\RobotXC.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\RobotXC.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\RobotXC.lib" /MACHINE:X86 Debug\RobotXC.res
+         Debug\AccountInfo.obj
+         Debug\CommonTool.obj
+         Debug\FileReader.obj
          Debug\moc_RobotXC.obj
          Debug\qrc_robotxc.obj
          Debug\main.obj
          Debug\RobotXC.obj
          Debug\stdafx.obj
+         Debug\XCVoice.obj
+         LINK : 没有找到 C:\Users\Administor\Documents\RobotXC\Win32\Debug\\RobotXC.exe 或上一个增量链接没有生成它；正在执行完全链接
          RobotXC.vcxproj -> C:\Users\Administor\Documents\RobotXC\Win32\Debug\RobotXC.exe
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Administor\Documents\RobotXC\Win32\Debug\\RobotXC.exe;#1" /manifest Debug\RobotXC.exe.intermediate.manifest
@@ -39,4 +37,4 @@
 
 生成成功。
 
-已用时间 00:00:09.62
+已用时间 00:00:05.43
