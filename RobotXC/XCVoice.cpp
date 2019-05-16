@@ -98,6 +98,7 @@ bool XCVoice::InitASR(){
 	initConfig        += ",dataPath=" + account_info->data_path();
 	eRet = hci_asr_recorder_init( initConfig.c_str(), &call_back);
 	if (eRet == RECORDER_ERR_NONE){
+		qDebug()<<"asr ready!";
 		return true;
 	}else{
 		return false;
@@ -241,8 +242,7 @@ void HCIAPI XCVoice::RecorderRecogFinish(RECORDER_EVENT eRecorderEvent,ASR_RECOG
 	if(eRecorderEvent == RECORDER_EVENT_RECOGNIZE_COMPLETE){
 		char buff[32];
 		clock_t endClock = clock();
-		QString recogtime;
-		recogtime.sprintf("识别时间:%dms", (int)endClock - (int)dlg->m_startRecogClock);
+		QString recogtime = QString("识别时间:%1 ms").arg((int)endClock - (int)dlg->m_startRecogClock);
 		qDebug()<<recogtime;
 	}
 	QString strMessage = "";
@@ -283,7 +283,6 @@ void HCIAPI XCVoice::RecorderRecogProcess(RECORDER_EVENT eRecorderEvent,ASR_RECO
 	}else{
 		str.append( "*****无识别结果*****" );
 	}
-	qDebug()<<str;
 }
 void HCIAPI XCVoice::RecorderErr(RECORDER_EVENT eRecorderEvent,HCI_ERR_CODE eErrorCode,void *pUsrParam){
 	qDebug()<<"系统错误:"<<eErrorCode;

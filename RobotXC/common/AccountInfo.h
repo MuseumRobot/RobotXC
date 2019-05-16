@@ -1,6 +1,5 @@
 ﻿#ifndef __ACCOUNT_INFO_H__
 #define __ACCOUNT_INFO_H__
-#include "stdafx.h"
 #include <string>
 using std::string;
 

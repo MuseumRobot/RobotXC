@@ -1,6 +1,5 @@
 ﻿#ifndef __COMMON_TOOL_H__
 #define __COMMON_TOOL_H__
-#include "stdafx.h"
 namespace HciExampleComon{
     //设置控制台打印颜色
     void SetSpecialConsoleTextAttribute();
