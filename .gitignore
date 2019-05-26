@@ -16,9 +16,10 @@
 
 *.tlog
 
-# Debug&Release
+# Debug & Release & GeneratedFiles
 Win32/
 Debug/
+GeneratedFiles/
 
 #HCI_Config
 HCI_AUTH

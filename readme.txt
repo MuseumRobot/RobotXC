@@ -1,3 +1,5 @@
+#脱离VC环境运行应用程序所需文件
+
 #Qt基础动态库
 -codecs
 -imageformats
