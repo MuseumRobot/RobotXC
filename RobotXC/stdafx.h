@@ -6,4 +6,6 @@
 #include <GBK.h>
 #include <time.h>
 //втсцдё©И
+#include "include/Map.h"
+#include "include/Point.h"
 //#include "XCVoice.h"
