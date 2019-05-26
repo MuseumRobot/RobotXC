@@ -22,20 +22,12 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		for(int i=0;i<m_map->M;i++){
 			for(int j=0;j<m_map->N;j++){
 				QRect r(x0+w*j,y0+h*i,w,h);
-				painter.setBrush(QColor(220,220,220));
-				painter.drawRect(r);
 				if(m_map->m_maze[i][j] == 1){
-					//painter.drawImage(QRect(x0+w*j,y0+h*i,w,h),QImage("Resources/obstacle.png"));
 					painter.setBrush(QColor(100,100,100));
 					painter.drawRect(r);
-				}else{	//ÎÞÕÏ°­
-					if(m_map->m_weight[i][j] == 2){	//Ë®Â·
-						painter.setBrush(QColor(30,144,255));
-						painter.drawRect(r);
-					}else if(m_map->m_weight[i][j] == 4){	//É³Ä®
-						painter.setBrush(QColor(255,150,40));
-						painter.drawRect(r);
-					}
+				}else{
+					painter.setBrush(QColor(220,220,220));
+					painter.drawRect(r);
 				}
 			}
 		}
@@ -50,6 +42,11 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		painter.setFont(QFont("Arial", 40));
 		painter.drawText(rect(), Qt::AlignCenter, GBK::ToUnicode("µØÍ¼±à¼­Æ÷A*"));
 	}
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(QColor(255,0,0,100));
+	painter.drawPie(QRect(x0,y0,400,400),150*16,360*16);
+	painter.setBrush(QColor(0,255,0,100));
+	painter.drawPie(QRect(20,20,400,400),20*16,200*16);
 }
 void XCOverview::timerEvent(QTimerEvent *event){
 	if(event->timerId() == m_timerId){
