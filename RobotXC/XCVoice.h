@@ -4,8 +4,8 @@
 #include "include/hci_tts_player.h"
 #include "include/hci_asr.h"
 #include "include/hci_asr_recorder.h"
-#include "common/CommonTool.h"
-#include "common/AccountInfo.h"
+#include "include/CommonTool.h"
+#include "include/AccountInfo.h"
 
 #define IS_RECORDER_CONTINUE FALSE	//ÊÇ·ñÁ¬ÐøÂ¼Òô
 

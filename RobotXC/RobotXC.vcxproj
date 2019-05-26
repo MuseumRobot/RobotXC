@@ -83,9 +83,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="common\AccountInfo.cpp" />
-    <ClCompile Include="common\CommonTool.cpp" />
-    <ClCompile Include="common\FileReader.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_RobotXC.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -98,6 +95,8 @@
     <ClCompile Include="GeneratedFiles\Release\moc_RobotXC.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="include\AccountInfo.cpp" />
+    <ClCompile Include="include\CommonTool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RobotXC.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -108,10 +107,9 @@
     <ClCompile Include="XCVoice.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common\AccountInfo.h" />
-    <ClInclude Include="common\CommonTool.h" />
-    <ClInclude Include="common\FileReader.h" />
     <ClInclude Include="GeneratedFiles\ui_robotxc.h" />
+    <ClInclude Include="include\AccountInfo.h" />
+    <ClInclude Include="include\CommonTool.h" />
     <ClInclude Include="include\hci_asr.h" />
     <ClInclude Include="include\hci_asr_recorder.h" />
     <ClInclude Include="include\hci_sys.h" />

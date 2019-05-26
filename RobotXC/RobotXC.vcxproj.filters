@@ -62,17 +62,14 @@
     <ClCompile Include="XCVoice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="common\AccountInfo.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\CommonTool.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\FileReader.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="XCConfig.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\AccountInfo.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="include\CommonTool.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,15 +81,6 @@
     </ClInclude>
     <ClInclude Include="XCVoice.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common\AccountInfo.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\CommonTool.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\FileReader.h">
-      <Filter>Source Files\common</Filter>
     </ClInclude>
     <ClInclude Include="include\hci_asr.h">
       <Filter>Header Files\include</Filter>
@@ -111,6 +99,12 @@
     </ClInclude>
     <ClInclude Include="XCConfig.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AccountInfo.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CommonTool.h">
+      <Filter>Source Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
