@@ -71,6 +71,9 @@
     <ClCompile Include="common\FileReader.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="XCConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -105,6 +108,9 @@
     </ClInclude>
     <ClInclude Include="include\hci_tts_player.h">
       <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="XCConfig.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

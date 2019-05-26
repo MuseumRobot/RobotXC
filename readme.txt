@@ -14,7 +14,7 @@
 -hci_sys.dll
 -libhci_curl.dll
 ##TTS
--hci_tts.dl
+-hci_tts.dll
 -hci_tts_player.dll
 -hci_tts_cloud._synth.dll
 -jtopus.dll

@@ -1,38 +1,25 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
+# General_ignore
 *.obj
-
-# Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+#*.lib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
-*.app
+
 *.opensdf
 *.sdf
 *.aps
 *.ipch
+
 *.tlog
-*
+
+# Debug&Release
+Win32/
+Debug/
+
+#HCI_Config
+HCI_AUTH
+HCI_USER_INFO

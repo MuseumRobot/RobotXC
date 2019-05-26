@@ -80,9 +80,9 @@ AccountInfo::AccountInfo()
 #endif
 
 	test_data_path_ = path_prefix + "/Configure";
-	data_path_ = path_prefix + "/bin";
-	auth_path_ = path_prefix + "/bin";
-	logfile_path_ = path_prefix + "/bin";
+	data_path_ = path_prefix + "/Configure";
+	auth_path_ = path_prefix + "/Configure";
+	logfile_path_ = path_prefix + "/Configure";
 }
 
 AccountInfo::~AccountInfo()
