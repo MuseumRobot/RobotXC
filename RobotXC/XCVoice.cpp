@@ -38,7 +38,7 @@ void XCVoice::StartRecord(){
 }
 bool XCVoice::Init(){
 	account_info = AccountInfo::GetInstance();				// 获取AccountInfo单例
-	string account_info_file = "Configure/AccountInfo.txt";	// 账号信息读取
+	string account_info_file = "./Configure/AccountInfo.txt";	// 账号信息读取
 	account_info->LoadFromFile(account_info_file);
 	// SYS初始化
 	HCI_ERR_CODE errCode = HCI_ERR_NONE;
@@ -311,7 +311,7 @@ QString XCVoice::Json_SearchKeyword(QString buf,QString keyword){
 	QString QAnswer;
 	int i=0,j=0,n=3;
 	i=buf.indexOf(keyword);
-	while(buf.at(i+keyword.length()+n+j) != '"'){
+	while(i != -1 && buf.at(i+keyword.length()+n+j) != '"'){
 		QAnswer += buf.at(i+keyword.length()+n+j);
 		j++;
 	}

@@ -74,13 +74,13 @@ AccountInfo::AccountInfo()
     cloud_url_ = "";
     cap_key_ = "";
 	
-	string path_prefix = "../..";
+	string path_prefix = ".";
 #ifdef _WIN32_WCE
 	path_prefix = "/SDMMC";
 #endif
 
-	test_data_path_ = path_prefix + "/testdata";
-	data_path_ = path_prefix + "/data";
+	test_data_path_ = path_prefix + "/Configure";
+	data_path_ = path_prefix + "/bin";
 	auth_path_ = path_prefix + "/bin";
 	logfile_path_ = path_prefix + "/bin";
 }

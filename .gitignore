@@ -34,3 +34,5 @@
 *.sdf
 *.aps
 *.ipch
+*.tlog
+*
