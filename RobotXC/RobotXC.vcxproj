@@ -102,6 +102,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="include\AccountInfo.cpp" />
+    <ClCompile Include="include\AStar.cpp" />
     <ClCompile Include="include\CommonTool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RobotXC.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="GeneratedFiles\ui_RobotXC.h" />
     <ClInclude Include="GeneratedFiles\ui_XCOverview.h" />
     <ClInclude Include="include\AccountInfo.h" />
+    <ClInclude Include="include\AStar.h" />
     <ClInclude Include="include\CommonTool.h" />
     <ClInclude Include="include\hci_asr.h" />
     <ClInclude Include="include\hci_asr_recorder.h" />

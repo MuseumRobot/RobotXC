@@ -16,8 +16,8 @@ RobotXC::~RobotXC(){
 }
 void RobotXC::OnBtnRecord(){
 	//m_voice->StartRecord();
-	if(m_overview!=NULL){
-		delete m_overview;
-		m_overview = NULL;
+	if(m_overview->m_map!=NULL){
+		delete m_overview->m_map;
+		m_overview->m_map = NULL;
 	}
 }

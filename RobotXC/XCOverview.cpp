@@ -10,7 +10,10 @@ XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 }
 
 XCOverview::~XCOverview(){
-
+	if(m_map!=NULL){
+		delete m_map;
+		m_map = NULL;
+	}
 }
 void XCOverview::paintEvent(QPaintEvent *event){
 	QPainter painter(this);
@@ -37,16 +40,16 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		if(m_map->x_end>-1&&m_map->y_end>-1){
 			painter.drawImage(QRect(x0+w*m_map->y_end,y0+h*m_map->x_end,w,h),QImage("Resources/end.png"));
 		}
+		painter.setPen(Qt::NoPen);
+		painter.setBrush(QColor(255,0,0,100));
+		painter.drawPie(QRect(x0,y0,400,400),150*16,360*16);
+		painter.setBrush(QColor(0,255,0,100));
+		painter.drawPie(QRect(20,20,400,400),20*16,200*16);
 	}else{
 		painter.setPen(Qt::blue);
 		painter.setFont(QFont("Arial", 40));
 		painter.drawText(rect(), Qt::AlignCenter, GBK::ToUnicode("µØÍ¼±à¼­Æ÷A*"));
 	}
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(QColor(255,0,0,100));
-	painter.drawPie(QRect(x0,y0,400,400),150*16,360*16);
-	painter.setBrush(QColor(0,255,0,100));
-	painter.drawPie(QRect(20,20,400,400),20*16,200*16);
 }
 void XCOverview::timerEvent(QTimerEvent *event){
 	if(event->timerId() == m_timerId){

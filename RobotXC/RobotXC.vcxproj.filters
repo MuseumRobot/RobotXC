@@ -80,6 +80,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_XCOverview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="include\AStar.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -106,12 +109,6 @@
     <ClInclude Include="XCConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AccountInfo.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CommonTool.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_RobotXC.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -123,6 +120,15 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_XCOverview.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AStar.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AccountInfo.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CommonTool.h">
+      <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
