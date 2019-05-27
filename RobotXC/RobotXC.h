@@ -18,10 +18,11 @@ public:
 
 private:
 	Ui::RobotXCClass ui;
-	XCVoice* m_voice;		//语音组件
-	XCConfig* m_config;		//配置组件
+	XCVoice* m_voice;				//语音组件
+	XCConfig* m_config;				//配置组件
 	XCOverview* m_overview;			//地图组件
-
+	int timer_instruction;			//指令计时器
+	void timerEvent(QTimerEvent *event);
 private slots:
 	void OnBtnRecord();
 };

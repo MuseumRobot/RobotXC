@@ -1,0 +1,1 @@
+hci_init函数产生HCI_AUTH与HCI_USER_INFO
