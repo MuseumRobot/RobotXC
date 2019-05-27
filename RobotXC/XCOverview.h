@@ -2,6 +2,7 @@
 #include <QWidget>
 #include "ui_XCOverview.h"
 #include "stdafx.h"
+
 class XCOverview : public QWidget{
 	Q_OBJECT
 public:

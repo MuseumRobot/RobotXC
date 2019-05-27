@@ -25,8 +25,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>519</width>
-         <height>292</height>
+         <width>484</width>
+         <height>304</height>
         </rect>
        </property>
       </widget>
@@ -70,13 +70,56 @@
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
+    <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionZoomIn"/>
+   <addaction name="actionZoomout"/>
+   <addaction name="actionDragHorizon"/>
+   <addaction name="actionSetDynamicBarrier"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionZoomIn">
+   <property name="icon">
+    <iconset resource="robotxc.qrc">
+     <normaloff>:/RobotXC/Resources/放大.png</normaloff>:/RobotXC/Resources/放大.png</iconset>
+   </property>
+   <property name="text">
+    <string>放大地图</string>
+   </property>
+   <property name="toolTip">
+    <string>放大地图</string>
+   </property>
+  </action>
+  <action name="actionZoomout">
+   <property name="icon">
+    <iconset resource="robotxc.qrc">
+     <normaloff>:/RobotXC/Resources/缩小.png</normaloff>:/RobotXC/Resources/缩小.png</iconset>
+   </property>
+   <property name="text">
+    <string>缩小地图</string>
+   </property>
+  </action>
+  <action name="actionDragHorizon">
+   <property name="icon">
+    <iconset resource="robotxc.qrc">
+     <normaloff>:/RobotXC/Resources/拖拽.png</normaloff>:/RobotXC/Resources/拖拽.png</iconset>
+   </property>
+   <property name="text">
+    <string>拖拽视野</string>
+   </property>
+  </action>
+  <action name="actionSetDynamicBarrier">
+   <property name="icon">
+    <iconset resource="robotxc.qrc">
+     <normaloff>:/RobotXC/Resources/动态障碍.png</normaloff>:/RobotXC/Resources/动态障碍.png</iconset>
+   </property>
+   <property name="text">
+    <string>设置动态障碍物</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

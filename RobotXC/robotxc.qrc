@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="RobotXC">
-    </qresource>
+  <qresource prefix="RobotXC">
+    <file>Resources/动态障碍.png</file>
+    <file>Resources/放大.png</file>
+    <file>Resources/拖拽.png</file>
+    <file>Resources/缩小.png</file>
+  </qresource>
 </RCC>

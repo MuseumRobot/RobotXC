@@ -1,11 +1,8 @@
-#ifndef XCCONTROL_H
-#define XCCONTROL_H
-
+#pragma once
 #include <QWidget>
 #include "ui_XCControl.h"
 
-class XCControl : public QWidget
-{
+class XCControl : public QWidget{
 	Q_OBJECT
 
 public:
@@ -15,5 +12,3 @@ public:
 private:
 	Ui::XCControl ui;
 };
-
-#endif // XCCONTROL_H

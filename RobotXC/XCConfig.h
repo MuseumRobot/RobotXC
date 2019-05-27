@@ -17,6 +17,7 @@ private:
 	int error_angle_;			//角度误差(°)
 	int error_distance_;		//距离误差(mm)
 	int offset_correction_;		//偏移量修正(mm)(星标中心点与电机中心点的相对位置)
+	int map_scale_;				//地图显示尺寸(用于设置绘制地图时一个单元格的边长，单位为像素)
 	void init();
 	string trim(const string& str);
 	vector<string> split(string str,string pattern);
@@ -33,5 +34,6 @@ public:
 	int error_angle();
 	int error_distance();
 	int offset_correction();
+	int map_scale();
 };
 
