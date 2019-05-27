@@ -13,7 +13,7 @@
 *.sdf
 *.aps
 *.ipch
-
+*.suo
 *.tlog
 
 # Debug & Release & GeneratedFiles
