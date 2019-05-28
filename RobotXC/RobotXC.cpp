@@ -18,19 +18,27 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(ui.btnRecord,SIGNAL(clicked()),this,SLOT(OnBtnRecord()));
 	connect(ui.actionZoomIn,SIGNAL(triggered()),m_config,SLOT(map_scale_add()));
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
+	connect(ui.actionDisplayDilate,SIGNAL(triggered()),this,SLOT(OnBtnDisplayDilate()));
 	timer_instruction = startTimer(m_config->instruction_cycle());		//启动指令周期计时器
-	AStar a;
-	a.Init(m_map);
-	
+	m_astar = new AStar;
+	m_astar->Init(m_map);
+	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
+	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->obstacle_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
+	m_map->x_start = m_map->y_start = 5;
+	m_map->x_end = m_map->y_end = 15;
+	m_astar->Calculate(false);
+	m_result = m_astar->GetResultList();
+	m_overview->m_result = m_result;
 }
 RobotXC::~RobotXC(){
 	delete m_voice;
 	delete m_config;
+	delete m_overview;
+	delete m_astar;
 	if(m_map!=NULL){
 		delete m_map;
 		m_map = NULL;
 	}
-	delete m_overview;
 }
 void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
@@ -70,4 +78,11 @@ bool RobotXC::LoadMap(){
 		return false;
 	}
 	return true;
+}
+void RobotXC::OnBtnDisplayDilate(){
+	if(ui.actionDisplayDilate->isChecked()){
+		m_overview->m_showDilateMap = 1;
+	}else{
+		m_overview->m_showDilateMap = 0;
+	}
 }

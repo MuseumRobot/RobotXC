@@ -79,6 +79,7 @@
    <addaction name="actionZoomout"/>
    <addaction name="actionDragHorizon"/>
    <addaction name="actionSetDynamicBarrier"/>
+   <addaction name="actionDisplayDilate"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionZoomIn">
@@ -118,6 +119,18 @@
    </property>
    <property name="text">
     <string>设置动态障碍物</string>
+   </property>
+  </action>
+  <action name="actionDisplayDilate">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="robotxc.qrc">
+     <normaloff>:/RobotXC/Resources/膨胀.png</normaloff>:/RobotXC/Resources/膨胀.png</iconset>
+   </property>
+   <property name="text">
+    <string>显示膨胀地图</string>
    </property>
   </action>
  </widget>

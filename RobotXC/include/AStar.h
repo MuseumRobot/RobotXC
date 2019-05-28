@@ -7,11 +7,11 @@ public:
 	AStar(void);
 	~AStar(void);
 private:
-	Map* m_map;
 	PointList openlist;	//待探索列表
 	PointList closelist;	//已探索列表
 	Point* currentPoint;
 public:
+	Map* m_map;
 	std::list<Point> result;		
 	std::list<Point> GetResultList();//返回结果序列
 	void Init(Map* map);

@@ -4,6 +4,7 @@
 #include "XCVoice.h"
 #include "XCConfig.h"
 #include "XCOverview.h"
+#include "stdafx.h"
 #define PI 3.141592653
 #define DODGESSTEPS 50			//闪避时刻中最低有效步数
 #define SPEAKWORDSPERSECOND 4	//王静每秒钟阅读的字数
@@ -21,15 +22,17 @@ private:
 	XCVoice* m_voice;				//语音组件(负责TTS与ASR,如果ASR正常运行则通过在其回调函数中emit signal来发送识别结果)
 	XCConfig* m_config;				//配置组件(负责管理预设参数)
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
-	
+	AStar* m_astar;					//A*寻路计算器
 	int timer_instruction;			//指令计时器
 	void timerEvent(QTimerEvent *event);
 	Map* m_map;						//存储地图
 	bool LoadMap();
+	std::list<Point> m_result;		//存储A*计算器计算出的路径点列表
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
 private slots:
 	void OnBtnRecord();
+	void OnBtnDisplayDilate();
 };
 
 

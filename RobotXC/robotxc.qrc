@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="RobotXC">
+    <file>Resources/膨胀.png</file>
     <file>Resources/动态障碍.png</file>
     <file>Resources/放大.png</file>
     <file>Resources/拖拽.png</file>

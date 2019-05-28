@@ -10,7 +10,8 @@ std::list<Point> AStar::GetResultList(){
 }
 void AStar::Init(Map* map){
 	m_map = map;
-	m_map->m_dilate_maze = DilateMatrix(2,m_map->m_maze);
+	m_map->m_dilate_maze = DilateMatrix(0,m_map->m_maze);	//默认不膨胀
+	m_map->m_dilate_dynamicObstacleLife = DilateMatrix(0,m_map->m_dynamicObstacleLife);
 }
 void AStar::Calculate(bool isIgnoreCornor){
 	//将起点加入open表

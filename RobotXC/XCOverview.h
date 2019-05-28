@@ -12,6 +12,8 @@ public:
 	XCConfig* m_config;
 	QPoint m_robotPos;
 	QPoint m_mousePos;
+	std::list<Point> m_result;
+	bool m_showDilateMap;
 private:
 	Ui::XCOverview ui;
 	int x0,y0,w0,h0;	//绘图板的位置与大小
@@ -22,6 +24,4 @@ private:
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
-public slots:
-	void test();
 };

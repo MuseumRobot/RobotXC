@@ -6,6 +6,7 @@ XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 	m_map = NULL;
 	m_timerId = startTimer(50);
 	x0=0,y0=0,w0=this->width(),h0=this->height();
+	m_showDilateMap = 0;
 }
 
 XCOverview::~XCOverview(){}
@@ -19,12 +20,22 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		for(int i=0;i<m_map->M;i++){
 			for(int j=0;j<m_map->N;j++){
 				QRect r(x0+w*j,y0+h*i,w,h);
-				if(m_map->m_maze[i][j] == 1){
-					painter.setBrush(QColor(100,100,100));
-					painter.drawRect(r);
+				if(m_showDilateMap == 0){
+					if(m_map->m_maze[i][j] == 1){
+						painter.setBrush(QColor(100,100,100));
+						painter.drawRect(r);
+					}else{
+						painter.setBrush(QColor(220,220,220));
+						painter.drawRect(r);
+					}
 				}else{
-					painter.setBrush(QColor(220,220,220));
-					painter.drawRect(r);
+					if(m_map->m_dilate_maze[i][j] == 1){
+						painter.setBrush(QColor(100,100,100));
+						painter.drawRect(r);
+					}else{
+						painter.setBrush(QColor(220,220,220));
+						painter.drawRect(r);
+					}
 				}
 			}
 		}
@@ -34,6 +45,8 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		if(m_map->x_end>-1&&m_map->y_end>-1){
 			painter.drawImage(QRect(x0+w*m_map->y_end,y0+h*m_map->x_end,w,h),QImage("Resources/end.png"));
 		}
+		for(std::list<Point>::iterator iter = m_result.begin(); iter != m_result.end(); iter++) 
+			painter.drawImage(QRect(x0+w*iter->y,y0+h*iter->x,w,h),QImage("Resources/foot.png"));
 		painter.setPen(Qt::NoPen);
 		painter.setBrush(QColor(255,0,0,100));
 		painter.drawPie(QRect(x0-m_config->map_scale()*8,y0-m_config->map_scale()*8,m_config->map_scale()*8*2,m_config->map_scale()*8*2),150*16,360*16);
@@ -47,6 +60,10 @@ void XCOverview::paintEvent(QPaintEvent *event){
 }
 void XCOverview::timerEvent(QTimerEvent *event){
 	if(event->timerId() == m_timerId){
+		if(m_map!=NULL){
+			this->setFixedWidth(m_map->N * m_config->map_scale());
+			this->setFixedHeight(m_map->M * m_config->map_scale());
+		}
 		x0=0,y0=0,w0=this->width(),h0=this->height();
 		update();
 	}
@@ -58,10 +75,5 @@ void XCOverview::mousePressEvent(QMouseEvent *event){
 
 }
 void XCOverview::mouseReleaseEvent(QMouseEvent *event){
-
-}
-
-
-void XCOverview::test(){
 
 }
