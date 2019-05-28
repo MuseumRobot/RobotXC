@@ -18,6 +18,7 @@ void XCConfig::init(){
 	error_distance_ = 150;		//默认误差距离mm
 	offset_correction_ = 325;	//默认修正偏移量mm
 	map_scale_ = 10;			//默认绘图尺度为每格边长10像素
+	architect_scale_ = 10;		//默认每格边长代表世界坐标10cm
 }
 bool XCConfig::LoadFromFile(const string &config_file){
 	ifstream fin;
@@ -55,6 +56,8 @@ bool XCConfig::LoadFromFile(const string &config_file){
 			offset_correction_ = stoi(key_value[1]);
 		}else if (stricmp(key_value[0].c_str(),"map_scale") == 0){
 			map_scale_ = stoi(key_value[1]);
+		}else if (stricmp(key_value[0].c_str(),"architect_scale") == 0){
+			architect_scale_ = stoi(key_value[1]);
 		}
 	}
 	fin.close();		//关闭文件
@@ -117,6 +120,9 @@ int XCConfig::offset_correction(){
 }
 int XCConfig::map_scale(){
 	return map_scale_;
+}
+int XCConfig::architect_scale(){
+	return architect_scale_;
 }
 void XCConfig::map_scale_add(){
 	if(map_scale_<20){

@@ -16,6 +16,7 @@ public:
 	std::list<Point> GetResultList();//返回结果序列
 	void Init(Map* map);
 	void Calculate(bool isIgnoreCornor);
+	std::vector<std::vector<int>> DilateMatrix(int n,std::vector<std::vector<int>> originMatrix);
 private:
 	Point* isInList(PointList& list,Point *point);	//判断list中是否含有某点
 	Point* FindMinF(PointList& list);
@@ -25,5 +26,6 @@ private:
 	int CalF(Point* p);
 	int CalG(Point* p1, Point* p2);
 	int CalH(Point* p);
+	
 };
 

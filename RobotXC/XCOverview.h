@@ -16,7 +16,7 @@ private:
 	Ui::XCOverview ui;
 	int x0,y0,w0,h0;	//绘图板的位置与大小
 	int m_timerId;
-	bool LoadMap();
+	
 	void paintEvent(QPaintEvent *event);
 	void timerEvent(QTimerEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);

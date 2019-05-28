@@ -10,6 +10,7 @@ std::list<Point> AStar::GetResultList(){
 }
 void AStar::Init(Map* map){
 	m_map = map;
+	m_map->m_dilate_maze = DilateMatrix(2,m_map->m_maze);
 }
 void AStar::Calculate(bool isIgnoreCornor){
 	//将起点加入open表
@@ -86,14 +87,14 @@ std::vector<Point *> AStar::getSurroundPoints(Point *point,bool isIgnoreCorner){
 }
 bool AStar::isReachable(Point* p1, Point* p2, bool isIgnoreCornor){
 	bool flag;
-	if(p2->x < 0 || p2->y < 0 || p2->x > m_map->M-1 || p2->y > m_map->N-1 || m_map->m_maze[p2->x][p2->y] == 1 ||
-		isInList(closelist,p2) || p1->x == p2->x && p1->y == p2->y){
+	if(p2->x < 0 || p2->y < 0 || p2->x > m_map->M-1 || p2->y > m_map->N-1 || m_map->m_dilate_maze[p2->x][p2->y] == 1 ||
+		isInList(closelist,p2) || p1->x == p2->x && p1->y == p2->y || m_map->m_dilate_dynamicObstacleLife[p2->x][p2->y] > 0){
 		flag = false;
 	}else{
 		if(abs(p1->x - p2->x) + abs(p1->y - p2->y) == 1){
 			flag = true;
 		}else{
-			if(m_map->m_maze[p2->x][p1->y] == 0 && m_map->m_maze[p1->x][p2->y] == 0){
+			if(m_map->m_dilate_maze[p2->x][p1->y] == 0 && m_map->m_dilate_maze[p1->x][p2->y] == 0 && m_map->m_dilate_dynamicObstacleLife[p2->x][p1->y] == 0 && m_map->m_dilate_dynamicObstacleLife[p1->x][p2->y] == 0){
 				flag = true;
 			}else{
 				flag = isIgnoreCornor;
@@ -116,4 +117,32 @@ int AStar::CalG(Point* p1, Point * p2){
 int AStar::CalH(Point* p){
 	float dist = sqrt(pow((float)(p->x - m_map->x_end),2)+pow((float)(p->y - m_map->y_end),2));
 	return dist * 10;
+}
+std::vector<std::vector<int>> AStar::DilateMatrix(int n,std::vector<std::vector<int>> originMatrix){
+	std::vector<std::vector<int>> dilate_maze;
+	dilate_maze.resize(m_map->M);
+	for(int i=0;i<m_map->M;i++){
+		dilate_maze[i].resize(m_map->N);
+	}
+	if(n == 0){
+		return originMatrix;
+	}else if(n > 0){
+		std::vector<std::vector<int>> pre_dilate_maze =  DilateMatrix(n-1,originMatrix);
+		for(int i=0;i<m_map->M;i++){
+			for(int j=0;j<m_map->N;j++){
+				if(pre_dilate_maze[i][j]>0){
+					for(int x=i-1;x<i+2;x++){
+						for(int y=j-1;y<j+2;y++){
+							if(x>-1 && y>-1 && x<m_map->M && y<m_map->N){
+								if(dilate_maze[x][y] == 0){
+									dilate_maze[x][y] = pre_dilate_maze[i][j];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return dilate_maze;
 }

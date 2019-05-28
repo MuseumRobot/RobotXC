@@ -5,16 +5,10 @@ XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 	ui.setupUi(this);
 	m_map = NULL;
 	m_timerId = startTimer(50);
-	LoadMap();
 	x0=0,y0=0,w0=this->width(),h0=this->height();
 }
 
-XCOverview::~XCOverview(){
-	if(m_map!=NULL){
-		delete m_map;
-		m_map = NULL;
-	}
-}
+XCOverview::~XCOverview(){}
 void XCOverview::paintEvent(QPaintEvent *event){
 	QPainter painter(this);
 	painter.setBrush(QColor(200,200,200));
@@ -67,33 +61,7 @@ void XCOverview::mouseReleaseEvent(QMouseEvent *event){
 
 }
 
-bool XCOverview::LoadMap(){
-	QString filepath = "./Configure/museum.map";
-	if(filepath.length()>0){
-		string gbk_name=GBK::FromUnicode(filepath);
-		//打开文件，读取内容
-		FILE* fp=fopen(gbk_name.c_str(),"rb");
-		//文件的大小
-		if(fp != NULL){
-			int M,N;
-			fread(&M,sizeof(int),1,fp);
-			fread(&N,sizeof(int),1,fp);
-			m_map = new Map(M,N);
-			for(int i=0;i<M;i++){
-				for(int j=0;j<N;j++){
-					fread(&(m_map->m_maze[i][j]),sizeof(int),1,fp);
-					fread(&(m_map->m_weight[i][j]),sizeof(int),1,fp);
-				}
-			}
-			fclose(fp);	//关闭文件
-		}else{
-			return false;
-		}
-	}else{
-		return false;
-	}
-	return true;
-}
+
 void XCOverview::test(){
 
 }

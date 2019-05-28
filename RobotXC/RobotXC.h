@@ -21,9 +21,11 @@ private:
 	XCVoice* m_voice;				//语音组件(负责TTS与ASR,如果ASR正常运行则通过在其回调函数中emit signal来发送识别结果)
 	XCConfig* m_config;				//配置组件(负责管理预设参数)
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
+	
 	int timer_instruction;			//指令计时器
 	void timerEvent(QTimerEvent *event);
-
+	Map* m_map;						//存储地图
+	bool LoadMap();
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
 private slots:
