@@ -118,3 +118,13 @@ int XCConfig::offset_correction(){
 int XCConfig::map_scale(){
 	return map_scale_;
 }
+void XCConfig::map_scale_add(){
+	if(map_scale_<20){
+		map_scale_++;
+	}
+}
+void XCConfig::map_scale_diminish(){
+	if(map_scale_>4){
+		map_scale_--;
+	}
+}

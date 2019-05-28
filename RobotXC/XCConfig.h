@@ -1,7 +1,9 @@
 #pragma once
 #include <fstream>
+#include <QWidget>
 using namespace std;
-class XCConfig{
+class XCConfig:public QWidget{
+	Q_OBJECT
 public:
 	XCConfig(void);
 	~XCConfig(void);
@@ -35,5 +37,8 @@ public:
 	int error_distance();
 	int offset_correction();
 	int map_scale();
+public slots:
+	void map_scale_add();
+	void map_scale_diminish();
 };
 

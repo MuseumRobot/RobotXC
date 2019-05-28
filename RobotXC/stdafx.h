@@ -9,4 +9,4 @@
 #include "include/Map.h"
 #include "include/Point.h"
 #include "include/AStar.h"
-//#include "XCVoice.h"
+#include "XCConfig.h"

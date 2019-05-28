@@ -4,7 +4,7 @@
 XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 	ui.setupUi(this);
 	m_map = NULL;
-	m_timerId = startTimer(30);
+	m_timerId = startTimer(50);
 	LoadMap();
 	x0=0,y0=0,w0=this->width(),h0=this->height();
 }
@@ -42,7 +42,7 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		}
 		painter.setPen(Qt::NoPen);
 		painter.setBrush(QColor(255,0,0,100));
-		painter.drawPie(QRect(x0,y0,400,400),150*16,360*16);
+		painter.drawPie(QRect(x0-m_config->map_scale()*8,y0-m_config->map_scale()*8,m_config->map_scale()*8*2,m_config->map_scale()*8*2),150*16,360*16);
 		painter.setBrush(QColor(0,255,0,100));
 		painter.drawPie(QRect(20,20,400,400),20*16,200*16);
 	}else{
@@ -93,4 +93,7 @@ bool XCOverview::LoadMap(){
 		return false;
 	}
 	return true;
+}
+void XCOverview::test(){
+
 }

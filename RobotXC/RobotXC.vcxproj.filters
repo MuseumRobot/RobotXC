@@ -92,6 +92,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_XCControl.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_XCConfig.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_XCConfig.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -114,9 +120,6 @@
     </ClInclude>
     <ClInclude Include="include\hci_tts_player.h">
       <Filter>Header Files\include</Filter>
-    </ClInclude>
-    <ClInclude Include="XCConfig.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_RobotXC.h">
       <Filter>Generated Files</Filter>
@@ -164,6 +167,9 @@
     </CustomBuild>
     <CustomBuild Include="XCControl.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="XCConfig.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

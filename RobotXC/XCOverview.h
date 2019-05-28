@@ -9,6 +9,7 @@ public:
 	XCOverview(QWidget *parent = 0);
 	~XCOverview();
 	Map* m_map;
+	XCConfig* m_config;
 	QPoint m_robotPos;
 	QPoint m_mousePos;
 private:
@@ -21,4 +22,6 @@ private:
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
+public slots:
+	void test();
 };
