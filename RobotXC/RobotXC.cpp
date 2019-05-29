@@ -15,6 +15,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 		m_overview->setFixedWidth(m_overview->m_map->N * m_config->map_scale());
 		m_overview->setFixedHeight(m_overview->m_map->M * m_config->map_scale());
 	}
+
 	connect(ui.btnRecord,SIGNAL(clicked()),this,SLOT(OnBtnRecord()));
 	connect(ui.actionZoomIn,SIGNAL(triggered()),m_config,SLOT(map_scale_add()));
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
@@ -29,6 +30,8 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_astar->Calculate(false);
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = m_result;
+	robotPos = QPointF(0.00,0.00);
+	robotFaceAngle = 0.0;
 }
 RobotXC::~RobotXC(){
 	delete m_voice;
@@ -44,6 +47,50 @@ void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
 
 	}
+}
+void RobotXC::TrunForwardGoal(){
+	QPointF d = goalPos - robotPos;
+	float goalAngle = GetAngleFromVector(d);
+	float deltaAngle = Modf360(goalAngle - robotFaceAngle);
+	if(deltaAngle > 180){
+		if(deltaAngle > 330) TurnLeft(0.5);
+		else TurnLeft(1);
+	}else{
+		if(deltaAngle < 30) TurnRight(0.5);
+		else TurnRight(1);
+	}
+}
+void RobotXC::TurnLeft(float ratio){
+	
+}
+void RobotXC::TurnRight(float ratio){
+
+}
+void RobotXC::MoveForward(float ratio){
+
+}
+void RobotXC::MoveBackward(float ratio){
+
+}
+float RobotXC::GetAngleFromVector(QPointF delta){
+	float angle = 0.0;
+	if(delta.x() > 0 && delta.y() > 0){
+		angle =atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第一象限
+	}else if(delta.x() < 0 && delta.y() < 0){
+		angle =180 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第三象限
+	}else if(delta.x() <0 && delta.y() > 0){
+		angle =180 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第二象限
+	}else{
+		angle =360 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第四象限
+	}
+	return angle;
+}
+float RobotXC::Modf360(float angle){
+	while(angle>360.0 || angle<0.0){
+		if(angle>360.0) angle -= 360.0;
+		else angle += 360.0;
+	}
+	return angle;
 }
 void RobotXC::OnBtnRecord(){
 	//m_voice->StartRecord();

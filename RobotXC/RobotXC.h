@@ -12,27 +12,34 @@
 #define SPEAKTASKTYPE 1			//语音任务点类型
 class RobotXC : public QMainWindow{
 	Q_OBJECT
-
 public:
 	RobotXC(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~RobotXC();
-
 private:
 	Ui::RobotXCClass ui;
 	XCVoice* m_voice;				//语音组件(负责TTS与ASR,如果ASR正常运行则通过在其回调函数中emit signal来发送识别结果)
 	XCConfig* m_config;				//配置组件(负责管理预设参数)
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
 	AStar* m_astar;					//A*寻路计算器
-	int timer_instruction;			//指令计时器
-	void timerEvent(QTimerEvent *event);
 	Map* m_map;						//存储地图
-	bool LoadMap();
+	int timer_instruction;			//指令计时器
 	std::list<Point> m_result;		//存储A*计算器计算出的路径点列表
 	QPointF robotPos;				//机器人坐标(cm,cm)
+	QPointF goalPos;				//目标坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
+	bool isSimulateMode;			//是否是模拟模式
+	bool LoadMap();							//读取地图
+	void timerEvent(QTimerEvent *event);	//计时器循环函数
+	void TrunForwardGoal();					//朝向目标
+	void TurnLeft(float ratio);				//左转
+	void TurnRight(float ratio);			//右转
+	void MoveForward(float ratio);			//前进
+	void MoveBackward(float ratio);			//后退
+	float GetAngleFromVector(QPointF delta);		//由向量求角度
+	float Modf360(float angle);						//将角度换算到(0,360)之间
 private slots:
-	void OnBtnRecord();
-	void OnBtnDisplayDilate();
+	void OnBtnRecord();				//开始聆听
+	void OnBtnDisplayDilate();		//显示膨胀地图
 };
 
 
