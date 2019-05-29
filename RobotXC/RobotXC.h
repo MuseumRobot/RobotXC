@@ -4,6 +4,7 @@
 #include "XCVoice.h"
 #include "XCConfig.h"
 #include "XCOverview.h"
+#include "XCControl.h"
 #include "stdafx.h"
 #define PI 3.141592653
 #define DODGESSTEPS 50			//闪避时刻中最低有效步数
@@ -20,6 +21,7 @@ private:
 	XCVoice* m_voice;				//语音组件(负责TTS与ASR,如果ASR正常运行则通过在其回调函数中emit signal来发送识别结果)
 	XCConfig* m_config;				//配置组件(负责管理预设参数)
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
+	XCControl* m_control;			//控制台组件
 	AStar* m_astar;					//A*寻路计算器
 	Map* m_map;						//存储地图
 	int timer_instruction;			//指令计时器
@@ -35,11 +37,14 @@ private:
 	void TurnRight(float ratio);			//右转
 	void MoveForward(float ratio);			//前进
 	void MoveBackward(float ratio);			//后退
+	void AssignInstruction();				//安排指令
 	float GetAngleFromVector(QPointF delta);		//由向量求角度
 	float Modf360(float angle);						//将角度换算到(0,360)之间
 private slots:
 	void OnBtnRecord();				//开始聆听
 	void OnBtnDisplayDilate();		//显示膨胀地图
+public slots:
+	void OnBtnChangeSimulateMode();
 };
 
 

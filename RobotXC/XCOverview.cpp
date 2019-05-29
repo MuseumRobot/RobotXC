@@ -4,7 +4,7 @@
 XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 	ui.setupUi(this);
 	m_map = NULL;
-	m_timerId = startTimer(50);
+	m_timerId = startTimer(100);
 	x0=0,y0=0,w0=this->width(),h0=this->height();
 	m_showDilateMap = 0;
 }

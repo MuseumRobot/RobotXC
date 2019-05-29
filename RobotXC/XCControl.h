@@ -8,7 +8,5 @@ class XCControl : public QWidget{
 public:
 	XCControl(QWidget *parent = 0);
 	~XCControl();
-
-private:
 	Ui::XCControl ui;
 };

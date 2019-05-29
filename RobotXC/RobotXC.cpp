@@ -5,7 +5,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_voice = new XCVoice;
 	m_config = new XCConfig;
 	m_overview = new XCOverview;
-	
+	m_control = new XCControl;
 	m_overview->m_config = m_config;	//将配置项提供给绘图组件
 	if(LoadMap()){
 		m_overview->m_map = m_map;		//如果成功读取地图，则将地图赋给绘图组件
@@ -20,6 +20,8 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(ui.actionZoomIn,SIGNAL(triggered()),m_config,SLOT(map_scale_add()));
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
 	connect(ui.actionDisplayDilate,SIGNAL(triggered()),this,SLOT(OnBtnDisplayDilate()));
+	connect(m_control->ui.btnSimulate,SIGNAL(clicked()),this,SLOT(OnBtnChangeSimulateMode()));
+	m_control->show();
 	timer_instruction = startTimer(m_config->instruction_cycle());		//启动指令周期计时器
 	m_astar = new AStar;
 	m_astar->Init(m_map);
@@ -32,6 +34,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_overview->m_result = m_result;
 	robotPos = QPointF(0.00,0.00);
 	robotFaceAngle = 0.0;
+	isSimulateMode = false;
 }
 RobotXC::~RobotXC(){
 	delete m_voice;
@@ -45,8 +48,11 @@ RobotXC::~RobotXC(){
 }
 void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
-
+		AssignInstruction();
 	}
+}
+void RobotXC::AssignInstruction(){
+
 }
 void RobotXC::TrunForwardGoal(){
 	QPointF d = goalPos - robotPos;
@@ -61,16 +67,32 @@ void RobotXC::TrunForwardGoal(){
 	}
 }
 void RobotXC::TurnLeft(float ratio){
-	
+	if(isSimulateMode){
+
+	}else{
+		//真实运动
+	}
 }
 void RobotXC::TurnRight(float ratio){
+	if(isSimulateMode){
 
+	}else{
+
+	}
 }
 void RobotXC::MoveForward(float ratio){
+	if(isSimulateMode){
 
+	}else{
+
+	}
 }
 void RobotXC::MoveBackward(float ratio){
+	if(isSimulateMode){
 
+	}else{
+
+	}
 }
 float RobotXC::GetAngleFromVector(QPointF delta){
 	float angle = 0.0;
@@ -132,4 +154,12 @@ void RobotXC::OnBtnDisplayDilate(){
 	}else{
 		m_overview->m_showDilateMap = 0;
 	}
+}
+void RobotXC::OnBtnChangeSimulateMode(){
+	if(isSimulateMode == false){
+		m_control->ui.btnSimulate->setText(GBK::ToUnicode("关闭模拟模式"));
+	}else{
+		m_control->ui.btnSimulate->setText(GBK::ToUnicode("开启模拟模式"));
+	}
+	isSimulateMode = !isSimulateMode;
 }
