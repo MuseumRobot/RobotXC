@@ -33,10 +33,13 @@ private:
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	QPointF goalPos;				//目标坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
+	float faceAudianceAngle;		//面朝观众的角度(°)
 	bool isSimulateMode;			//是否是模拟模式
+	bool isAutoMode;				//是否是自动模式
 	bool LoadMap();							//读取地图
 	bool LoadTask();						//读取任务库
 	bool LoadSpeakContent();				//读取语料库
+	int JudgeTaskType(int taskID);			//判断当前任务类型，位移为0，语音为1
 	void timerEvent(QTimerEvent *event);	//计时器循环函数
 	void TrunForwardGoal();					//朝向目标
 	void TurnLeft(float ratio);				//左转
@@ -48,12 +51,14 @@ private:
 	float GetAngleFromVector(QPointF delta);		//由向量求角度
 	float Modf360(float angle);						//将角度换算到(0,360)之间
 	void GetResultF();				//依据m_result计算出m_result_f
-
+	XCTaskDataType* findTask(int taskId);
+	XCSpeakContentType* findSpeakContent(int speakContentId);
 private slots:
 	void OnBtnRecord();				//开始聆听
 	void OnBtnDisplayDilate();		//显示膨胀地图
 public slots:
 	void OnBtnChangeSimulateMode();
+	void OnBtnChangeAutoMode();
 	void OnBtnTurnLeft();
 	void OnBtnTurnRight();
 	void OnBtnMoveForward();

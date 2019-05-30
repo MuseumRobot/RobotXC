@@ -26,6 +26,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
 	connect(ui.actionDisplayDilate,SIGNAL(triggered()),this,SLOT(OnBtnDisplayDilate()));
 	connect(m_control->ui.btnSimulate,SIGNAL(clicked()),this,SLOT(OnBtnChangeSimulateMode()));
+	connect(m_control->ui.btnAutoGuide,SIGNAL(clicked()),this,SLOT(OnBtnChangeAutoMode()));
 	connect(m_control->ui.btnLeft,SIGNAL(clicked()),this,SLOT(OnBtnTurnLeft()));
 	connect(m_control->ui.btnRight,SIGNAL(clicked()),this,SLOT(OnBtnTurnRight()));
 	connect(m_control->ui.btnForward,SIGNAL(clicked()),this,SLOT(OnBtnMoveForward()));
@@ -53,6 +54,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	GetResultF();								//更新m_result_f以参与寻路计算
 
 	isSimulateMode = false;
+	isAutoMode = false;
 	m_control->ParseTaskSequence("1,2,3,4,7,2,3");
 
 }
@@ -68,13 +70,19 @@ RobotXC::~RobotXC(){
 }
 void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
-		AssignInstruction();
+		if(isAutoMode && !m_control->m_taskSequence.empty()){
+			AssignInstruction();
+
+		}
+		
 	}else if(event->timerId() == timer_data_refresh){
 		DataRefresh();
 	}
 }
 void RobotXC::AssignInstruction(){
-
+	if(JudgeTaskType(*(m_control->m_taskSequence.begin())) == 0){
+		int i = 0;
+	}
 }
 void RobotXC::DataRefresh(){
 	m_overview->m_robotPos = robotPos;
@@ -110,14 +118,14 @@ void RobotXC::MoveForward(float ratio){
 	if(isSimulateMode){
 		float a = cos(robotFaceAngle/360.0*2*PI);
 		float b = sin(robotFaceAngle/360.0*2*PI);
-		robotPos += QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
+		robotPos += QPointF(ratio*m_config->speed_line_basic_simulate()*cos(-1*(robotFaceAngle)/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(-1*robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
 }
 void RobotXC::MoveBackward(float ratio){
 	if(isSimulateMode){
-		robotPos -= QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
+		robotPos -= QPointF(ratio*m_config->speed_line_basic_simulate()*cos(-1*robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(-1*robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
@@ -203,6 +211,14 @@ void RobotXC::OnBtnChangeSimulateMode(){
 	}
 	isSimulateMode = !isSimulateMode;
 }
+void RobotXC::OnBtnChangeAutoMode(){
+	if(isAutoMode == false){
+		m_control->ui.btnAutoGuide->setText(GBK::ToUnicode("关闭自动导航"));
+	}else{
+		m_control->ui.btnAutoGuide->setText(GBK::ToUnicode("开启模拟模式"));
+	}
+	isAutoMode = !isAutoMode;
+}
 void RobotXC::OnBtnSpeak(){
 	QString str = m_control->ui.textSpeek->currentText();
 	m_voice->Speak(str);
@@ -246,4 +262,30 @@ bool RobotXC::LoadSpeakContent(){
 	}
 	fclose(fp);
 	return true;
+}
+XCTaskDataType* RobotXC::findTask(int taskId){
+	for(XCTaskDataTypeList::iterator iter = m_TaskDataRecords.begin();iter != m_TaskDataRecords.end(); iter ++){
+		XCTaskDataType& record = *iter;
+		if(record.id == taskId){
+			return &record;
+		}
+	}
+	return NULL;
+}
+XCSpeakContentType* RobotXC::findSpeakContent(int speakContentId){
+	for(XCSpeakContentTypeList::iterator iter = m_SpeakContentRecords.begin();iter != m_SpeakContentRecords.end(); iter ++){
+		XCSpeakContentType& record = *iter;
+		if(record.id == speakContentId){
+			return &record;
+		}
+	}
+	return NULL;
+}
+int RobotXC::JudgeTaskType(int taskID){
+	XCTaskDataType* task = findTask(taskID);
+	if(task != NULL){
+		return task->taskType;
+	}else{
+		return -1;	//返回异常值作为todoList的休止符
+	}
 }
