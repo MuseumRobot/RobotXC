@@ -13,10 +13,21 @@ void AStar::Init(Map* map){
 	m_map->m_dilate_maze = DilateMatrix(0,m_map->m_maze);	//默认不膨胀
 	m_map->m_dilate_dynamicObstacleLife = DilateMatrix(0,m_map->m_dynamicObstacleLife);
 }
+void AStar::Uninit(){
+	for(PointList::iterator iter = openlist.begin();iter != openlist.end();iter++){
+		delete *iter;
+		*iter = NULL;
+	}
+	openlist.clear();
+	for(PointList::iterator iter = closelist.begin();iter != closelist.end();iter++){
+		if(*iter!=NULL) 	delete *iter;
+	}
+	closelist.clear();
+}
 void AStar::Calculate(bool isIgnoreCornor){
 	//将起点加入open表
-	Point start(m_map->x_start,m_map->y_start);
-	openlist.push_back(&start);
+	Point* start = new Point(m_map->x_start,m_map->y_start);
+	openlist.push_back(start);
 	Point end(m_map->x_end,m_map->y_end);
 	do{
 		if(openlist.size() == 0){
@@ -39,6 +50,7 @@ void AStar::Calculate(bool isIgnoreCornor){
 					//如果这个节点在open中则计算G的值，如果比原来的大则不作为，否则设置其父节点为当前节点
 					int tempG = CalG(currentPoint, *iter);
 					Point* p1 = isInList(openlist,*iter);
+					delete *iter;	//将getsurround中临时new的Point删除
 					if(tempG < p1->G){
 						p1->parent = currentPoint;
 						p1->G = tempG;
@@ -102,6 +114,7 @@ bool AStar::isReachable(Point* p1, Point* p2, bool isIgnoreCornor){
 			}
 		}
 	}
+	delete p2;
 	return flag;
 }
 int AStar::CalF(Point* p){

@@ -15,6 +15,7 @@ public:
 	std::list<Point> result;		
 	std::list<Point> GetResultList();//返回结果序列
 	void Init(Map* map);
+	void Uninit();					//释放openlist与closelist中的内存
 	void Calculate(bool isIgnoreCornor);
 	std::vector<std::vector<int>> DilateMatrix(int n,std::vector<std::vector<int>> originMatrix);
 private:
