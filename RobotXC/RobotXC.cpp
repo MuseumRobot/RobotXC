@@ -30,7 +30,6 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_map->x_start = m_map->y_start = 5;
 	m_map->x_end = m_map->y_end = 15;
 	m_astar->Calculate(false);
-	m_astar->Uninit();
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = m_result;
 	robotPos = QPointF(0.00,0.00);

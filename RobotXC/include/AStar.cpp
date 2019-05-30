@@ -71,6 +71,7 @@ void AStar::Calculate(bool isIgnoreCornor){
 		result.push_front(*p);
 		p = p->parent;
 	}
+	Uninit();	//释放openlist与closelist中的内存
 }
 Point* AStar::isInList(PointList &plist,Point *point){
 	for(std::list<Point*>::iterator iter = plist.begin(); iter != plist.end(); iter++) 
