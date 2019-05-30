@@ -35,6 +35,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	robotPos = QPointF(0.00,0.00);
 	robotFaceAngle = 0.0;
 	isSimulateMode = false;
+	m_control->ParseTaskSequence("1,2,3,4,7,2,3");
 }
 RobotXC::~RobotXC(){
 	delete m_voice;

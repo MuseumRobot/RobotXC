@@ -26,6 +26,7 @@ private:
 	Map* m_map;						//存储地图
 	int timer_instruction;			//指令计时器
 	std::list<Point> m_result;		//存储A*计算器计算出的路径点列表
+	
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	QPointF goalPos;				//目标坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
