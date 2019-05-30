@@ -24,13 +24,14 @@ class XCVoice{
 public:
 	XCVoice(void);
 	~XCVoice(void);
-	void Speak(QString str);
 	void StartRecord();
-private:
-	AccountInfo *account_info;
 	bool m_isAuthReady;
 	bool m_isTTSReady;
 	bool m_isASRReady;
+	void Speak(QString str);
+	void StopSpeak();
+private:
+	AccountInfo *account_info;
 	AsrRecogType m_RecogType;
 	AsrRecogMode m_RecogMode;
 	clock_t m_startRecogClock;	//记录ASR开始识别的时间
@@ -53,5 +54,4 @@ private:
 	//针对ASR识别结果的Jason解析函数
 	void Json_Explain (QString buf,QString& Qresult,QString& Qanswer);
 	QString Json_SearchKeyword(QString buf,QString keyword);
-
 };

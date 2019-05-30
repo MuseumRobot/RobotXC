@@ -9,4 +9,6 @@
 #include "include/XCMap.h"
 #include "include/XCPoint.h"
 #include "include/AStar.h"
+#include "include/XCTaskDataType.h"
+#include "include/XCSpeakContentType.h"
 #include "XCConfig.h"

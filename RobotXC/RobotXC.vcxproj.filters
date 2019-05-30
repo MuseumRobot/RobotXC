@@ -103,9 +103,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XCVoice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\hci_asr.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -145,6 +142,12 @@
     <ClInclude Include="include\XCMap.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\XCTaskDataType.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XCSpeakContentType.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RobotXC.h">
@@ -169,6 +172,9 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="XCConfig.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="XCVoice.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

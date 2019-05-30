@@ -52,7 +52,7 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		QMatrix matrix;
 		matrix.rotate(180-m_robotFaceAngle);			//rotate默认顺时针旋转
 		QImage img_robot = QImage("Resources/yellowCar.png");
-		painter.drawImage(m_robotPos,img_robot.scaled(m_config->map_scale(),m_config->map_scale()).transformed(matrix,Qt::FastTransformation));	
+		painter.drawImage(QPointF(m_robotPos.x(),-1*m_robotPos.y()),img_robot.scaled(2*m_config->map_scale(),2*m_config->map_scale()).transformed(matrix,Qt::FastTransformation));	
 		//绘制视野
 		painter.setPen(Qt::NoPen);
 		painter.setBrush(QColor(255,0,0,100));

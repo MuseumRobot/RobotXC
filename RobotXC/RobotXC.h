@@ -23,7 +23,9 @@ private:
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
 	XCControl* m_control;			//控制台组件
 	AStar* m_astar;					//A*寻路计算器
-	XCMap* m_map;						//存储地图
+	XCMap* m_map;					//存储地图
+	XCTaskDataTypeList m_TaskDataRecords;			//所有任务点记录
+	XCSpeakContentTypeList m_SpeakContentRecords;	//所有语料记录
 	int timer_instruction;				//指令计时器
 	int timer_data_refresh;				//数据刷新计时器
 	std::list<XCPoint> m_result;		//存储A*计算器计算出的路径点列表
@@ -33,6 +35,8 @@ private:
 	float robotFaceAngle;			//机器人朝向角(°)
 	bool isSimulateMode;			//是否是模拟模式
 	bool LoadMap();							//读取地图
+	bool LoadTask();						//读取任务库
+	bool LoadSpeakContent();				//读取语料库
 	void timerEvent(QTimerEvent *event);	//计时器循环函数
 	void TrunForwardGoal();					//朝向目标
 	void TurnLeft(float ratio);				//左转
@@ -44,6 +48,7 @@ private:
 	float GetAngleFromVector(QPointF delta);		//由向量求角度
 	float Modf360(float angle);						//将角度换算到(0,360)之间
 	void GetResultF();				//依据m_result计算出m_result_f
+
 private slots:
 	void OnBtnRecord();				//开始聆听
 	void OnBtnDisplayDilate();		//显示膨胀地图
@@ -53,6 +58,8 @@ public slots:
 	void OnBtnTurnRight();
 	void OnBtnMoveForward();
 	void OnBtnMoveBackward();
+	void OnBtnSpeak();
+	void OnBtnStopSpeak();
 };
 
 

@@ -9,13 +9,18 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_overview->m_config = m_config;	//将配置项提供给绘图组件
 	if(LoadMap()){
 		m_overview->m_map = m_map;		//如果成功读取地图，则将地图赋给绘图组件
+		ui.overview->setWidget(m_overview);	//将绘图组件放在主界面的ui.overview控件(QScrollArea)中
+		if(m_overview->m_map!=NULL){
+			m_overview->setFixedWidth(m_overview->m_map->N * m_config->map_scale());
+			m_overview->setFixedHeight(m_overview->m_map->M * m_config->map_scale());
+		}
+		m_control->ui.checkMap->setChecked(true);
 	}
-	ui.overview->setWidget(m_overview);	//将绘图组件放在主界面的ui.overview控件(QScrollArea)中
-	if(m_overview->m_map!=NULL){
-		m_overview->setFixedWidth(m_overview->m_map->N * m_config->map_scale());
-		m_overview->setFixedHeight(m_overview->m_map->M * m_config->map_scale());
-	}
-
+	m_control->ui.checkHCI->setChecked(m_voice->m_isAuthReady);
+	m_control->ui.checkTTS->setChecked(m_voice->m_isTTSReady);
+	m_control->ui.checkASR->setChecked(m_voice->m_isASRReady);
+	m_control->ui.checkTask->setChecked(LoadTask());
+	m_control->ui.checkSpeak->setChecked(LoadSpeakContent());
 	connect(ui.btnRecord,SIGNAL(clicked()),this,SLOT(OnBtnRecord()));
 	connect(ui.actionZoomIn,SIGNAL(triggered()),m_config,SLOT(map_scale_add()));
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
@@ -25,23 +30,31 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(m_control->ui.btnRight,SIGNAL(clicked()),this,SLOT(OnBtnTurnRight()));
 	connect(m_control->ui.btnForward,SIGNAL(clicked()),this,SLOT(OnBtnMoveForward()));
 	connect(m_control->ui.btnBackward,SIGNAL(clicked()),this,SLOT(OnBtnMoveBackward()));
+	connect(m_control->ui.btnSpeak,SIGNAL(clicked()),this,SLOT(OnBtnSpeak()));
+	connect(m_control->ui.btnStopSpeak,SIGNAL(clicked()),this,SLOT(OnBtnStopSpeak()));
 	m_control->show();
+	m_control->move(20,20);
 	timer_instruction = startTimer(m_config->instruction_cycle());		//启动指令周期计时器
 	timer_data_refresh = startTimer(m_config->data_refresh_cycle());	//启动数据刷新计时器
 	m_astar = new AStar;
+	robotPos = QPointF(43.00,23.00);
+	goalPos = QPointF(142.0,160.0);
+	robotFaceAngle = 0.0;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
 	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->obstacle_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
-	m_map->x_start = m_map->y_start = 5;
-	m_map->x_end = m_map->y_end = 15;
+	m_map->x_start = robotPos.y()/m_config->architect_scale();
+	m_map->y_start = robotPos.x()/m_config->architect_scale();
+	m_map->x_end = goalPos.y()/m_config->architect_scale();
+	m_map->y_end = goalPos.x()/m_config->architect_scale();
 	m_astar->Calculate(false);
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = m_result;
 	GetResultF();								//更新m_result_f以参与寻路计算
-	robotPos = QPointF(0.00,0.00);
-	robotFaceAngle = 0.0;
+
 	isSimulateMode = false;
 	m_control->ParseTaskSequence("1,2,3,4,7,2,3");
+
 }
 RobotXC::~RobotXC(){
 	delete m_voice;
@@ -190,9 +203,47 @@ void RobotXC::OnBtnChangeSimulateMode(){
 	}
 	isSimulateMode = !isSimulateMode;
 }
+void RobotXC::OnBtnSpeak(){
+	QString str = m_control->ui.textSpeek->currentText();
+	m_voice->Speak(str);
+}
+void RobotXC::OnBtnStopSpeak(){
+	m_voice->StopSpeak();
+}
 void RobotXC::GetResultF(){
+	//坐标变换：方格以行列论(m行,n列)，转为overview下的坐标系(x,y)，x=n*map_scale,y=m*map_scale
 	for(std::list<XCPoint>::iterator iter = m_result.begin(); iter != m_result.end(); iter++){
-		QPointF a((iter->x + 0.5)*m_config->map_scale(),(iter->y + 0.5)*m_config->map_scale());
+		QPointF a((iter->y + 0.5)*m_config->map_scale(),(iter->x + 0.5)*m_config->map_scale());
 		m_result_f.push_back(a);
 	}
+}
+bool RobotXC::LoadTask(){
+	FILE* fp = fopen("Configure/task.data","rb");
+	if(!fp) return false;
+	m_TaskDataRecords.clear(); // 清空
+	// 加载数据	
+	while( !feof(fp)){
+		XCTaskDataType record;
+		int n = fread(&record, 1, sizeof(XCTaskDataType), fp);
+		if( n < 0 ) break;
+		if( n == 0) continue;
+		m_TaskDataRecords.push_back(record);
+	}
+	fclose(fp);
+	return true;
+}
+bool RobotXC::LoadSpeakContent(){
+	FILE* fp = fopen("Configure/speakContent.data", "rb");
+	if(!fp) return false;
+	m_SpeakContentRecords.clear(); // 清空
+	// 加载数据	
+	while( !feof(fp)){
+		XCSpeakContentType record;
+		int n = fread(&record, 1, sizeof(XCSpeakContentType), fp);
+		if( n < 0 ) break;
+		if( n == 0) continue;
+		m_SpeakContentRecords.push_back(record);
+	}
+	fclose(fp);
+	return true;
 }

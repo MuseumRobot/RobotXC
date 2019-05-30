@@ -17,6 +17,9 @@ void XCVoice::Speak(QString str){
 	QTest::qSleep(100);		//发送stop指令后留有短暂时间以供stop命令执行完成，否则无法start下一句
 	PLAYER_ERR_CODE eRetk = hci_tts_player_start( (const char*)pszUTF8, startConfig.c_str() );
 }
+void XCVoice::StopSpeak(){
+	hci_tts_player_stop();
+}
 void XCVoice::StartRecord(){
 	RECORDER_ERR_CODE eRet = RECORDER_ERR_NONE;
 	string startConfig = "";
