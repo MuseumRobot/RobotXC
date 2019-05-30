@@ -139,8 +139,8 @@
     <ClInclude Include="include\hci_sys.h" />
     <ClInclude Include="include\hci_tts.h" />
     <ClInclude Include="include\hci_tts_player.h" />
-    <ClInclude Include="include\Map.h" />
-    <ClInclude Include="include\Point.h" />
+    <ClInclude Include="include\XCMap.h" />
+    <ClInclude Include="include\XCPoint.h" />
     <CustomBuild Include="XCConfig.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing XCConfig.h...</Message>

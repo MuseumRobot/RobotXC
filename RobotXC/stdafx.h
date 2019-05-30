@@ -6,7 +6,7 @@
 #include <GBK.h>
 #include <time.h>
 //×ÔÓÃÄ£¿é
-#include "include/Map.h"
-#include "include/Point.h"
+#include "include/XCMap.h"
+#include "include/XCPoint.h"
 #include "include/AStar.h"
 #include "XCConfig.h"

@@ -21,8 +21,13 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
 	connect(ui.actionDisplayDilate,SIGNAL(triggered()),this,SLOT(OnBtnDisplayDilate()));
 	connect(m_control->ui.btnSimulate,SIGNAL(clicked()),this,SLOT(OnBtnChangeSimulateMode()));
+	connect(m_control->ui.btnLeft,SIGNAL(clicked()),this,SLOT(OnBtnTurnLeft()));
+	connect(m_control->ui.btnRight,SIGNAL(clicked()),this,SLOT(OnBtnTurnRight()));
+	connect(m_control->ui.btnForward,SIGNAL(clicked()),this,SLOT(OnBtnMoveForward()));
+	connect(m_control->ui.btnBackward,SIGNAL(clicked()),this,SLOT(OnBtnMoveBackward()));
 	m_control->show();
 	timer_instruction = startTimer(m_config->instruction_cycle());		//启动指令周期计时器
+	timer_data_refresh = startTimer(m_config->data_refresh_cycle());	//启动数据刷新计时器
 	m_astar = new AStar;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
@@ -32,6 +37,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_astar->Calculate(false);
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = m_result;
+	GetResultF();								//更新m_result_f以参与寻路计算
 	robotPos = QPointF(0.00,0.00);
 	robotFaceAngle = 0.0;
 	isSimulateMode = false;
@@ -50,10 +56,16 @@ RobotXC::~RobotXC(){
 void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
 		AssignInstruction();
+	}else if(event->timerId() == timer_data_refresh){
+		DataRefresh();
 	}
 }
 void RobotXC::AssignInstruction(){
 
+}
+void RobotXC::DataRefresh(){
+	m_overview->m_robotPos = robotPos;
+	m_overview->m_robotFaceAngle = robotFaceAngle;
 }
 void RobotXC::TrunForwardGoal(){
 	QPointF d = goalPos - robotPos;
@@ -69,31 +81,45 @@ void RobotXC::TrunForwardGoal(){
 }
 void RobotXC::TurnLeft(float ratio){
 	if(isSimulateMode){
-
+		robotFaceAngle += ratio*m_config->speed_angle_basic_simulate();
 	}else{
 		//真实运动
 	}
 }
 void RobotXC::TurnRight(float ratio){
 	if(isSimulateMode){
-
+		robotFaceAngle -= ratio*m_config->speed_angle_basic_simulate();
 	}else{
 
 	}
 }
 void RobotXC::MoveForward(float ratio){
 	if(isSimulateMode){
-
+		float a = cos(robotFaceAngle/360.0*2*PI);
+		float b = sin(robotFaceAngle/360.0*2*PI);
+		robotPos += QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
 }
 void RobotXC::MoveBackward(float ratio){
 	if(isSimulateMode){
-
+		robotPos -= QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
+}
+void RobotXC::OnBtnTurnLeft(){
+	TurnLeft(1);
+}
+void RobotXC::OnBtnTurnRight(){
+	TurnRight(1);
+}
+void RobotXC::OnBtnMoveForward(){
+	MoveForward(1);
+}
+void RobotXC::OnBtnMoveBackward(){
+	MoveBackward(1);
 }
 float RobotXC::GetAngleFromVector(QPointF delta){
 	float angle = 0.0;
@@ -133,7 +159,7 @@ bool RobotXC::LoadMap(){
 			int M,N;
 			fread(&M,sizeof(int),1,fp);
 			fread(&N,sizeof(int),1,fp);
-			m_map = new Map(M,N);
+			m_map = new XCMap(M,N);
 			for(int i=0;i<M;i++){
 				for(int j=0;j<N;j++){
 					fread(&(m_map->m_maze[i][j]),sizeof(int),1,fp);
@@ -163,4 +189,10 @@ void RobotXC::OnBtnChangeSimulateMode(){
 		m_control->ui.btnSimulate->setText(GBK::ToUnicode("开启模拟模式"));
 	}
 	isSimulateMode = !isSimulateMode;
+}
+void RobotXC::GetResultF(){
+	for(std::list<XCPoint>::iterator iter = m_result.begin(); iter != m_result.end(); iter++){
+		QPointF a((iter->x + 0.5)*m_config->map_scale(),(iter->y + 0.5)*m_config->map_scale());
+		m_result_f.push_back(a);
+	}
 }

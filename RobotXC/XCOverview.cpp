@@ -45,8 +45,15 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		if(m_map->x_end>-1&&m_map->y_end>-1){
 			painter.drawImage(QRect(x0+w*m_map->y_end,y0+h*m_map->x_end,w,h),QImage("Resources/end.png"));
 		}
-		for(std::list<Point>::iterator iter = m_result.begin(); iter != m_result.end(); iter++) 
+		for(std::list<XCPoint>::iterator iter = m_result.begin(); iter != m_result.end(); iter++) 
 			painter.drawImage(QRect(x0+w*iter->y,y0+h*iter->x,w,h),QImage("Resources/foot.png"));
+
+		//绘制机器人本体位置朝向
+		QMatrix matrix;
+		matrix.rotate(180-m_robotFaceAngle);			//rotate默认顺时针旋转
+		QImage img_robot = QImage("Resources/yellowCar.png");
+		painter.drawImage(m_robotPos,img_robot.scaled(m_config->map_scale(),m_config->map_scale()).transformed(matrix,Qt::FastTransformation));	
+		//绘制视野
 		painter.setPen(Qt::NoPen);
 		painter.setBrush(QColor(255,0,0,100));
 		painter.drawPie(QRect(x0-m_config->map_scale()*8,y0-m_config->map_scale()*8,m_config->map_scale()*8*2,m_config->map_scale()*8*2),150*16,360*16);

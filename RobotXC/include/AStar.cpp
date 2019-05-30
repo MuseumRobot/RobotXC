@@ -9,10 +9,10 @@ AStar::~AStar(void){
 	}
 }
 
-std::list<Point> AStar::GetResultList(){
+std::list<XCPoint> AStar::GetResultList(){
 	return result;
 }
-void AStar::Init(Map* map){
+void AStar::Init(XCMap* map){
 	m_map = map;
 	m_map->m_dilate_maze = DilateMatrix(0,m_map->m_maze);	//默认不膨胀
 	m_map->m_dilate_dynamicObstacleLife = DilateMatrix(0,m_map->m_dynamicObstacleLife);
@@ -30,9 +30,9 @@ void AStar::Uninit(){
 }
 void AStar::Calculate(bool isIgnoreCornor){
 	//将起点加入open表
-	Point* start = new Point(m_map->x_start,m_map->y_start);
+	XCPoint* start = new XCPoint(m_map->x_start,m_map->y_start);
 	openlist.push_back(start);
-	Point end(m_map->x_end,m_map->y_end);
+	XCPoint end(m_map->x_end,m_map->y_end);
 	do{
 		if(openlist.size() == 0){
 			break;
@@ -40,12 +40,12 @@ void AStar::Calculate(bool isIgnoreCornor){
 			currentPoint = FindMinF(openlist);	//找到open表中F最小的点置为当前点
 			closelist.push_back(currentPoint);	//把当前点加入close表
 			openlist.remove(currentPoint);		//把当前节点从open表中删除
-			std::vector<Point *> surroundPoints = getSurroundPoints(currentPoint,isIgnoreCornor);	//找到当前节点周围的可到达的格子
-			for(std::vector<Point *>::iterator iter = surroundPoints.begin(); iter != surroundPoints.end(); iter++){
+			std::vector<XCPoint *> surroundPoints = getSurroundPoints(currentPoint,isIgnoreCornor);	//找到当前节点周围的可到达的格子
+			for(std::vector<XCPoint *>::iterator iter = surroundPoints.begin(); iter != surroundPoints.end(); iter++){
 				if(!isInList(openlist,(*iter))){
 					//如果这个节点不在open中则加入open并更新其GHF
 					openlist.push_back(*iter);
-					Point* p1 = isInList(openlist,*iter);
+					XCPoint* p1 = isInList(openlist,*iter);
 					p1->G = CalG(currentPoint, p1);
 					p1->H = CalH(p1);
 					p1->F = CalF(p1);
@@ -53,7 +53,7 @@ void AStar::Calculate(bool isIgnoreCornor){
 				}else{
 					//如果这个节点在open中则计算G的值，如果比原来的大则不作为，否则设置其父节点为当前节点
 					int tempG = CalG(currentPoint, *iter);
-					Point* p1 = isInList(openlist,*iter);
+					XCPoint* p1 = isInList(openlist,*iter);
 					delete *iter;	//将getsurround中临时new的Point删除
 					if(tempG < p1->G){
 						p1->parent = currentPoint;
@@ -65,7 +65,7 @@ void AStar::Calculate(bool isIgnoreCornor){
 		}
 	}while(!isInList(openlist,&end) && !openlist.empty());
 	//从终点回溯到起点即可得到结果表
-	Point* p = NULL;
+	XCPoint* p = NULL;
 	for(PointList::iterator iter = openlist.begin(); iter != openlist.end(); iter++){
 		if((*iter)->x == m_map->x_end && (*iter)->y == m_map->y_end){
 			p = (*iter);
@@ -77,15 +77,15 @@ void AStar::Calculate(bool isIgnoreCornor){
 	}
 	Uninit();	//释放openlist与closelist中的内存
 }
-Point* AStar::isInList(PointList &plist,Point *point){
-	for(std::list<Point*>::iterator iter = plist.begin(); iter != plist.end(); iter++) 
+XCPoint* AStar::isInList(PointList &plist,XCPoint *point){
+	for(std::list<XCPoint*>::iterator iter = plist.begin(); iter != plist.end(); iter++) 
 		if((*iter)->x==point->x&&(*iter)->y==point->y) 
 			return *iter; 
 	return NULL;  
 }
-Point* AStar::FindMinF(PointList& list){
+XCPoint* AStar::FindMinF(PointList& list){
 	if(!openlist.empty()){
-		Point* p = *(openlist.begin());
+		XCPoint* p = *(openlist.begin());
 		for(PointList::iterator iter = openlist.begin(); iter != openlist.end(); iter++){
 			if((*iter)->F < p->F){
 				p = (*iter);
@@ -95,15 +95,15 @@ Point* AStar::FindMinF(PointList& list){
 	}
 	return NULL;
 }
-std::vector<Point *> AStar::getSurroundPoints(Point *point,bool isIgnoreCorner){
-	std::vector<Point *> surroundPoints; 
+std::vector<XCPoint *> AStar::getSurroundPoints(XCPoint *point,bool isIgnoreCorner){
+	std::vector<XCPoint *> surroundPoints; 
 	for(int x = point->x-1;x <= point->x+1;x++) 
 		for(int y = point->y-1;y <= point->y+1;y++) 
-			if(isReachable(point,new Point(x,y),isIgnoreCorner)) 
-				surroundPoints.push_back(new Point(x,y)); 
+			if(isReachable(point,new XCPoint(x,y),isIgnoreCorner)) 
+				surroundPoints.push_back(new XCPoint(x,y)); 
 	return surroundPoints;  
 }
-bool AStar::isReachable(Point* p1, Point* p2, bool isIgnoreCornor){
+bool AStar::isReachable(XCPoint* p1, XCPoint* p2, bool isIgnoreCornor){
 	bool flag;
 	if(p2->x < 0 || p2->y < 0 || p2->x > m_map->M-1 || p2->y > m_map->N-1 || m_map->m_dilate_maze[p2->x][p2->y] == 1 ||
 		isInList(closelist,p2) || p1->x == p2->x && p1->y == p2->y || m_map->m_dilate_dynamicObstacleLife[p2->x][p2->y] > 0){
@@ -122,10 +122,10 @@ bool AStar::isReachable(Point* p1, Point* p2, bool isIgnoreCornor){
 	delete p2;
 	return flag;
 }
-int AStar::CalF(Point* p){
+int AStar::CalF(XCPoint* p){
 	return p->G + p->H;
 }
-int AStar::CalG(Point* p1, Point * p2){
+int AStar::CalG(XCPoint* p1, XCPoint * p2){
 	int cost1 = 10;
 	int cost2 = 14;
 	int extraG = (abs(p2->x - p1->x)+abs(p2->y - p1->y)) == 1 ? cost1 : cost2; 
@@ -133,7 +133,7 @@ int AStar::CalG(Point* p1, Point * p2){
 	int sum = parentG + extraG + m_map->m_weight[p2->x][p2->y];
 	return sum;
 }
-int AStar::CalH(Point* p){
+int AStar::CalH(XCPoint* p){
 	float dist = sqrt(pow((float)(p->x - m_map->x_end),2)+pow((float)(p->y - m_map->y_end),2));
 	return dist * 10;
 }

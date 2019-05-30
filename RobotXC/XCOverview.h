@@ -8,11 +8,12 @@ class XCOverview : public QWidget{
 public:
 	XCOverview(QWidget *parent = 0);
 	~XCOverview();
-	Map* m_map;
+	XCMap* m_map;
 	XCConfig* m_config;
-	QPoint m_robotPos;
+	QPointF m_robotPos;
+	float m_robotFaceAngle;
 	QPoint m_mousePos;
-	std::list<Point> m_result;
+	std::list<XCPoint> m_result;
 	bool m_showDilateMap;
 private:
 	Ui::XCOverview ui;

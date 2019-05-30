@@ -23,10 +23,11 @@ private:
 	XCOverview* m_overview;			//地图组件(仅负责绘图与交互,尽量避免逻辑运算)
 	XCControl* m_control;			//控制台组件
 	AStar* m_astar;					//A*寻路计算器
-	Map* m_map;						//存储地图
-	int timer_instruction;			//指令计时器
-	std::list<Point> m_result;		//存储A*计算器计算出的路径点列表
-	
+	XCMap* m_map;						//存储地图
+	int timer_instruction;				//指令计时器
+	int timer_data_refresh;				//数据刷新计时器
+	std::list<XCPoint> m_result;		//存储A*计算器计算出的路径点列表
+	std::list<QPointF> m_result_f;		//存储A*计算器计算出的路径点的世界坐标
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	QPointF goalPos;				//目标坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
@@ -39,13 +40,19 @@ private:
 	void MoveForward(float ratio);			//前进
 	void MoveBackward(float ratio);			//后退
 	void AssignInstruction();				//安排指令
+	void DataRefresh();						//数据刷新
 	float GetAngleFromVector(QPointF delta);		//由向量求角度
 	float Modf360(float angle);						//将角度换算到(0,360)之间
+	void GetResultF();				//依据m_result计算出m_result_f
 private slots:
 	void OnBtnRecord();				//开始聆听
 	void OnBtnDisplayDilate();		//显示膨胀地图
 public slots:
 	void OnBtnChangeSimulateMode();
+	void OnBtnTurnLeft();
+	void OnBtnTurnRight();
+	void OnBtnMoveForward();
+	void OnBtnMoveBackward();
 };
 
 

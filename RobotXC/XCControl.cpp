@@ -35,6 +35,6 @@ void XCControl::ParseTaskSequence(QString str){
 			tempNum = "";
 		}
 	}
-	if(tempNum != "")	m_taskSequence.push_back(tempNum.toInt());
+	if(tempNum != "") m_taskSequence.push_back(tempNum.toInt());
 	UpdateTaskSequence();
 }

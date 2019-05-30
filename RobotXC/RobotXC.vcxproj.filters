@@ -124,12 +124,6 @@
     <ClInclude Include="GeneratedFiles\ui_RobotXC.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Map.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Point.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_XCOverview.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -144,6 +138,12 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_XCControl.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XCPoint.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XCMap.h">
+      <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
