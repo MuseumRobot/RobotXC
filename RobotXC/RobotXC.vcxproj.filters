@@ -98,6 +98,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_XCConfig.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="XCSimulateLaser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\XCMath.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -146,6 +152,12 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\XCSpeakContentType.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="XCSimulateLaser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XCMath.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>

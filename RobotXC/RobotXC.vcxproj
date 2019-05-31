@@ -116,6 +116,7 @@
     <ClCompile Include="include\AccountInfo.cpp" />
     <ClCompile Include="include\AStar.cpp" />
     <ClCompile Include="include\CommonTool.cpp" />
+    <ClCompile Include="include\XCMath.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RobotXC.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -125,6 +126,7 @@
     <ClCompile Include="XCConfig.cpp" />
     <ClCompile Include="XCControl.cpp" />
     <ClCompile Include="XCOverview.cpp" />
+    <ClCompile Include="XCSimulateLaser.cpp" />
     <ClCompile Include="XCVoice.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,10 +141,12 @@
     <ClInclude Include="include\hci_sys.h" />
     <ClInclude Include="include\hci_tts.h" />
     <ClInclude Include="include\hci_tts_player.h" />
+    <ClInclude Include="include\XCMath.h" />
     <ClInclude Include="include\XCSpeakContentType.h" />
     <ClInclude Include="include\XCTaskDataType.h" />
     <ClInclude Include="include\XCMap.h" />
     <ClInclude Include="include\XCPoint.h" />
+    <ClInclude Include="XCSimulateLaser.h" />
     <CustomBuild Include="XCConfig.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing XCConfig.h...</Message>

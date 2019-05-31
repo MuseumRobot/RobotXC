@@ -6,9 +6,12 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_config = new XCConfig;
 	m_overview = new XCOverview;
 	m_control = new XCControl;
+	m_simulateLaser = new XCSimulateLaser;
 	m_overview->m_config = m_config;	//将配置项提供给绘图组件
+	m_simulateLaser->m_config = m_config;//将配置项提供给虚拟激光组件
 	if(LoadMap()){
 		m_overview->m_map = m_map;		//如果成功读取地图，则将地图赋给绘图组件
+		m_simulateLaser->m_map = m_map;	//将地图赋予虚拟激光组件
 		ui.overview->setWidget(m_overview);	//将绘图组件放在主界面的ui.overview控件(QScrollArea)中
 		if(m_overview->m_map!=NULL){
 			m_overview->setFixedWidth(m_overview->m_map->N * m_config->map_scale());
@@ -47,8 +50,11 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	goalPos = QPointF(142.0,160.0);
 	robotFaceAngle = 0.0;
 	m_overview->m_robotPos = &robotPos;
+	m_simulateLaser->m_robotPos = &robotPos;
 	m_overview->m_goalPos = &goalPos;
 	m_overview->m_robotFaceAngle = &robotFaceAngle;
+	m_simulateLaser->m_robotFaceAngle = &robotFaceAngle;
+	m_overview->m_simulateLaserResult = m_simulateLaser->laserResult;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
 	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->obstacle_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
@@ -146,7 +152,7 @@ void RobotXC::AssignPresetTask(int n){
 	}
 }
 void RobotXC::DataRefresh(){
-
+	//m_simulateLaser->CalculateSurroundStatus();
 }
 void RobotXC::TrunForwardGoal(float goalAngle){
 	float deltaAngle = Modf360(goalAngle - robotFaceAngle);
@@ -198,34 +204,16 @@ void RobotXC::OnBtnMoveForward(){
 void RobotXC::OnBtnMoveBackward(){
 	MoveBackward(1);
 }
-float RobotXC::GetAngleFromVector(QPointF delta){
-	float angle = 0.0;
-	if(delta.x() > 0 && delta.y() > 0){
-		angle =atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第一象限
-	}else if(delta.x() < 0 && delta.y() < 0){
-		angle =180 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第三象限
-	}else if(delta.x() <0 && delta.y() > 0){
-		angle =180 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第二象限
-	}else{
-		angle =360 + atan(delta.y()/delta.x())/PI/2*360.0;	//目标在第四象限
-	}
-	return angle;
-}
-float RobotXC::Modf360(float angle){
-	while(angle>360.0 || angle<0.0){
-		if(angle>360.0) angle -= 360.0;
-		else angle += 360.0;
-	}
-	return angle;
-}
+
 void RobotXC::OnBtnRecord(){
 	//m_voice->StartRecord();
-	if(m_overview->m_map!=NULL){
-		delete m_overview->m_map;
-		m_overview->m_map = NULL;
-		m_overview->setFixedWidth(ui.overview->width());
-		m_overview->setFixedHeight(ui.overview->height());
-	}
+	//if(m_overview->m_map!=NULL){
+	//	delete m_overview->m_map;
+	//	m_overview->m_map = NULL;
+	//	m_overview->setFixedWidth(ui.overview->width());
+	//	m_overview->setFixedHeight(ui.overview->height());
+	//}
+	m_simulateLaser->CalculateSurroundStatus();
 }
 bool RobotXC::LoadMap(){
 	QString filepath = "./Configure/museum.map";

@@ -60,6 +60,14 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		painter.drawPie(QRect(robotPosByPixes.x()-m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale(),robotPosByPixes.y()-m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale(),m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale()*2,m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale()*2),((360-*m_robotFaceAngle)-70)*16,140*16);
 		painter.setBrush(QColor(0,255,0,50));
 		painter.drawPie(QRect(robotPosByPixes.x()-m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale(),robotPosByPixes.y()-m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale(),m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale()*2,m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale()*2),((360-*m_robotFaceAngle)-70)*16,140*16);
+		for(int i=0;i<28;i++){
+			if(m_simulateLaserResult[i]<1000){
+				painter.setPen(QPen(Qt::black));
+				QPointF obsOfLaserPosByPixes(m_simulateLaserResult[i]*cosAngle((4+i)*5-70 + *m_robotFaceAngle)+robotPosByPixes.x(),m_simulateLaserResult[i]*sinAngle((4+i)*5-70 + *m_robotFaceAngle)+robotPosByPixes.y());
+				painter.drawLine(robotPosByPixes,obsOfLaserPosByPixes);
+			}
+		}
+
 	}else{
 		painter.setPen(Qt::blue);
 		painter.setFont(QFont("Arial", 40));

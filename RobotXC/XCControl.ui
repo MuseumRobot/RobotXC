@@ -69,6 +69,9 @@
           <property name="text">
            <string>左转</string>
           </property>
+          <property name="shortcut">
+           <string>A</string>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -81,6 +84,9 @@
           </property>
           <property name="text">
            <string>前进</string>
+          </property>
+          <property name="shortcut">
+           <string>W</string>
           </property>
          </widget>
         </item>
@@ -95,6 +101,9 @@
           <property name="text">
            <string>右转</string>
           </property>
+          <property name="shortcut">
+           <string>D</string>
+          </property>
          </widget>
         </item>
         <item row="2" column="1">
@@ -108,6 +117,9 @@
           <property name="text">
            <string>后退</string>
           </property>
+          <property name="shortcut">
+           <string>S</string>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
@@ -120,6 +132,9 @@
           </property>
           <property name="text">
            <string>停止</string>
+          </property>
+          <property name="shortcut">
+           <string>Space</string>
           </property>
          </widget>
         </item>

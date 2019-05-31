@@ -5,8 +5,8 @@
 #include "XCConfig.h"
 #include "XCOverview.h"
 #include "XCControl.h"
+#include "XCSimulateLaser.h"
 #include "stdafx.h"
-#define PI 3.141592653
 #define DODGESSTEPS 50			//闪避时刻中最低有效步数
 #define SPEAKWORDSPERSECOND 4	//王静每秒钟阅读的字数
 class RobotXC : public QMainWindow{
@@ -22,6 +22,7 @@ private:
 	XCControl* m_control;			//控制台组件
 	AStar* m_astar;					//A*寻路计算器
 	XCMap* m_map;					//存储地图
+	XCSimulateLaser* m_simulateLaser;	//虚拟激光雷达
 	XCTaskDataTypeList m_TaskDataRecords;			//所有任务点记录
 	XCSpeakContentTypeList m_SpeakContentRecords;	//所有语料记录
 	int timer_instruction;				//指令计时器
@@ -49,8 +50,7 @@ private:
 	void AssignInstruction();				//安排指令
 	void AssignPresetTask(int n);			//安排预设任务
 	void DataRefresh();						//数据刷新
-	float GetAngleFromVector(QPointF delta);		//由向量求角度
-	float Modf360(float angle);						//将角度换算到(0,360)之间
+
 	void GetResultF();				//依据m_result计算出m_result_f
 	XCTaskDataType* findTask(int taskId);
 	XCSpeakContentType* findSpeakContent(int speakContentId);

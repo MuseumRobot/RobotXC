@@ -16,6 +16,7 @@ public:
 	QPoint m_mousePos;
 	std::list<XCPoint>* m_result;
 	bool m_showDilateMap;
+	float* m_simulateLaserResult;
 private:
 	Ui::XCOverview ui;
 	int x0,y0,w0,h0;	//绘图板的位置与大小
