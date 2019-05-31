@@ -2,7 +2,7 @@
 #include <QWidget>
 #include "ui_XCOverview.h"
 #include "stdafx.h"
-
+#define DYNAMICOBSTRACLELIFE 30	//动态障碍物生命周期
 class XCOverview : public QWidget{
 	Q_OBJECT
 public:
@@ -16,6 +16,7 @@ public:
 	QPoint m_mousePos;
 	std::list<XCPoint>* m_result;
 	bool m_showDilateMap;
+	bool m_isSetDynamicBarriers;
 	float* m_simulateLaserResult;
 private:
 	Ui::XCOverview ui;

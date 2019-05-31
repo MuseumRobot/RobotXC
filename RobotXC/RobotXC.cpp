@@ -28,6 +28,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	connect(ui.actionZoomIn,SIGNAL(triggered()),m_config,SLOT(map_scale_add()));
 	connect(ui.actionZoomout,SIGNAL(triggered()),m_config,SLOT(map_scale_diminish()));
 	connect(ui.actionDisplayDilate,SIGNAL(triggered()),this,SLOT(OnBtnDisplayDilate()));
+	connect(ui.actionSetDynamicBarrier,SIGNAL(triggered()),this,SLOT(OnBtnSetDynamicBarrier()));
 	connect(m_control->ui.btnSimulate,SIGNAL(clicked()),this,SLOT(OnBtnChangeSimulateMode()));
 	connect(m_control->ui.btnAutoGuide,SIGNAL(clicked()),this,SLOT(OnBtnChangeAutoMode()));
 	connect(m_control->ui.btnFastMode,SIGNAL(clicked()),this,SLOT(OnBtnChangeFastMode()));
@@ -46,7 +47,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	timer_instruction = startTimer(m_config->instruction_cycle());		//启动指令周期计时器
 	timer_data_refresh = startTimer(m_config->data_refresh_cycle());	//启动数据刷新计时器
 	m_astar = new AStar;
-	robotPos = QPointF(43.00,23.00);
+	robotPos = QPointF(55.00,58.00);
 	goalPos = QPointF(142.0,160.0);
 	robotFaceAngle = 0.0;
 	m_overview->m_robotPos = &robotPos;
@@ -70,7 +71,10 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	isSimulateMode = false;
 	isAutoMode = false;
 	isFastMode = false;
+	isDodgeMode = false;
 	m_speakWaitCycle = 0;
+	dodgeMoveSetps = 0;
+	dodgeMode = 0;
 	m_control->ParseTaskSequence("1,22,2,23,24,3,25,26,4,27,5,28,29,6,30,7,31,76");
 
 }
@@ -86,19 +90,31 @@ RobotXC::~RobotXC(){
 }
 void RobotXC::timerEvent(QTimerEvent *event){
 	if(event->timerId() == timer_instruction){
-		if(isAutoMode && !m_control->m_taskSequence.empty()){
-			if(m_speakWaitCycle<1){
-				AssignInstruction();	//分配指令
-				//如果任务板空了，则退出自动导航模式，否则对应语音等待减少策略
-				if(m_control->m_taskSequence.empty()){
-					OnBtnChangeAutoMode();
-					m_speakWaitCycle = 0;
+		if(isAutoMode){
+			if(!m_control->m_taskSequence.empty()){
+				if(m_speakWaitCycle<1){
+					AssignInstruction();	//分配指令
+					//如果任务板空了，则退出自动导航模式，否则对应语音等待减少策略
+					if(m_control->m_taskSequence.empty()){
+						OnBtnChangeAutoMode();
+						m_speakWaitCycle = 0;
+					}
+				}else{
+					if(isFastMode){
+						m_speakWaitCycle/=2;
+					}else{
+						m_speakWaitCycle-=1;
+					}
 				}
 			}else{
-				if(isFastMode){
-					m_speakWaitCycle/=2;
-				}else{
-					m_speakWaitCycle-=1;
+				OnBtnChangeAutoMode();
+				m_speakWaitCycle = 0;
+			}
+		}
+		for(int i=0;i<m_map->M;i++){
+			for(int j=0;j<m_map->N;j++){
+				if(m_map->m_dynamicObstacleLife[i][j]>0){
+					m_map->m_dynamicObstacleLife[i][j] --;
 				}
 			}
 		}
@@ -118,17 +134,10 @@ void RobotXC::AssignInstruction(){
 			float dDistance = sqrt(pow(d.x(),2)+pow(d.y(),2));		//机器人中心到目标点的距离，单位cm
 			float errorRange_Angle = m_config->error_angle();		//选择角度的误差范围，单位°
 			if(dDistance > errorRange_Distance){					//如果还没有抵达当前任务目标点就继续执行任务
-				float goalAngle = GetAngleFromVector(d);
-				if(Modf360(abs(goalAngle - robotFaceAngle))>errorRange_Angle){		
-					TrunForwardGoal(goalAngle);						//如果和目标角度差距大就先转向目标
-				}else{	//转到想要的角度后就继续走
-					if(m_simulateLaser->isClear(m_config->far_obs_threshold())){
-						MoveForward(1);		//前方通畅
-					}else if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
-						MoveForward(0.8);	//前方通行
-					}else{	//前方有障碍
-
-					}
+				if(!isDodgeMode){
+					CommomMeasures();
+				}else{	
+					DodgeMeasures();
 				}
 			}else{													//如果已经抵达当前目标点，还需要转向观众
 				if(Modf360(abs(faceAudianceAngle - robotFaceAngle))>errorRange_Angle){		
@@ -214,13 +223,20 @@ void RobotXC::OnBtnMoveBackward(){
 }
 
 void RobotXC::OnBtnRecord(){
-	//m_voice->StartRecord();
+	m_voice->StartRecord();
 	//if(m_overview->m_map!=NULL){
 	//	delete m_overview->m_map;
 	//	m_overview->m_map = NULL;
 	//	m_overview->setFixedWidth(ui.overview->width());
 	//	m_overview->setFixedHeight(ui.overview->height());
 	//}
+}
+void RobotXC::OnBtnSetDynamicBarrier(){
+	if(ui.actionSetDynamicBarrier->isChecked()){
+		m_overview->m_isSetDynamicBarriers = true;
+	}else{
+		m_overview->m_isSetDynamicBarriers = false;
+	}
 }
 bool RobotXC::LoadMap(){
 	QString filepath = "./Configure/museum.map";
@@ -269,7 +285,7 @@ void RobotXC::OnBtnChangeAutoMode(){
 		m_control->ui.btnAutoGuide->setText(GBK::ToUnicode("关闭自动导航"));
 		m_voice->Speak("自动导航已开启！");
 	}else{
-		m_control->ui.btnAutoGuide->setText(GBK::ToUnicode("开启模拟模式"));
+		m_control->ui.btnAutoGuide->setText(GBK::ToUnicode("开启自动导航"));
 		m_voice->Speak("自动导航已关闭！");
 	}
 	isAutoMode = !isAutoMode;
@@ -366,5 +382,58 @@ int RobotXC::JudgeTaskType(int taskID){
 		return task->taskType;
 	}else{
 		return -1;	//返回异常值作为todoList的休止符
+	}
+}
+void RobotXC::CommomMeasures(){
+	QPointF d = goalPos - robotPos;
+	float errorRange_Angle = m_config->error_angle();		//选择角度的误差范围，单位°
+	float goalAngle = GetAngleFromVector(d);
+	if(Modf360(abs(goalAngle - robotFaceAngle))>errorRange_Angle){		
+		TrunForwardGoal(goalAngle);						//如果和目标角度差距大就先转向目标
+	}else{	//转到想要的角度后就继续走
+		if(m_simulateLaser->isClear(m_config->far_obs_threshold())){
+			MoveForward(1);		//前方通畅
+		}else if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
+			MoveForward(0.8);	//前方通行
+		}else{
+			isDodgeMode = true;
+		}
+	}
+}
+void RobotXC::DodgeMeasures(){
+	if((m_simulateLaser->isClear(m_config->obstacle_threshold()) == true && dodgeMoveSetps > DODGESTEPS * 0.6) || dodgeMoveSetps > DODGESTEPS){
+		isDodgeMode = false;				//超出闪避有效步数后，如果当前前路通畅，则退出闪避时刻
+		dodgeMoveSetps = 0;					
+		dodgeMode = 0;						//闪避模式为0时可以接受新的闪避倾向策略
+	}else{
+		float d = Modf360(GetAngleFromVector(goalPos-robotPos) - robotFaceAngle);
+		if(dodgeMode == 0){
+			if(d>180.0){
+				dodgeMode = 1;	//目标在当前朝向的左手边则向左避障
+			}else{
+				dodgeMode = 2;	//目标在当前朝向的右手边则向右避障
+			}
+		}
+		if(dodgeMode == 1){
+			DodgeLeft();	
+		}else{
+			DodgeRight();	
+		}
+	}
+}
+void RobotXC::DodgeLeft(){
+	if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
+		MoveForward(1);		//在向左转到前方无障碍时前进一步
+		dodgeMoveSetps++;		//只有在躲避时刻中进行push操作才是有效操作，原地转圈没啥用
+	}else{
+		TurnLeft(1);
+	}
+}
+void RobotXC::DodgeRight(){
+	if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
+		MoveForward(1);		//在向左转到前方无障碍时前进一步
+		dodgeMoveSetps++;		//只有在躲避时刻中进行push操作才是有效操作，原地转圈没啥用
+	}else{
+		TurnRight(1);
 	}
 }

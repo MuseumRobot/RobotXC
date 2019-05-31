@@ -113,6 +113,9 @@
    </property>
   </action>
   <action name="actionSetDynamicBarrier">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="robotxc.qrc">
      <normaloff>:/RobotXC/Resources/动态障碍.png</normaloff>:/RobotXC/Resources/动态障碍.png</iconset>

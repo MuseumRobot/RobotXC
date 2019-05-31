@@ -6,7 +6,8 @@ XCOverview::XCOverview(QWidget *parent):QWidget(parent){
 	m_map = NULL;
 	m_timerId = startTimer(100);
 	x0=0,y0=0,w0=this->width(),h0=this->height();
-	m_showDilateMap = 0;
+	m_showDilateMap = false;
+	m_isSetDynamicBarriers = false;
 }
 
 XCOverview::~XCOverview(){}
@@ -23,6 +24,9 @@ void XCOverview::paintEvent(QPaintEvent *event){
 				if(m_showDilateMap == 0){
 					if(m_map->m_maze[i][j] == 1){
 						painter.setBrush(QColor(100,100,100));
+						painter.drawRect(r);
+					}else if(m_map->m_dynamicObstacleLife[i][j]>0){		//»æÖÆ¶¯Ì¬ÕÏ°­Îï
+						painter.setBrush(QColor(100,0,0));
 						painter.drawRect(r);
 					}else{
 						painter.setBrush(QColor(220,220,220));
@@ -91,7 +95,20 @@ void XCOverview::mouseMoveEvent(QMouseEvent *event){
 
 }
 void XCOverview::mousePressEvent(QMouseEvent *event){
-
+	if(m_map != NULL){
+		m_mousePos = event->pos();
+		int x = (m_mousePos.y()-y0)/(h0/m_map->M);
+		int y = (m_mousePos.x()-x0)/(w0/m_map->N);
+		if(m_isSetDynamicBarriers){
+			for(int i=x-1;i<x+2;i++){
+				if(i<0) continue;
+				for(int j=y-1;j<y+2;j++){
+					if(j<0) continue;
+					m_map->m_dynamicObstacleLife[i][j] = DYNAMICOBSTRACLELIFE;
+				}
+			}
+		}
+	}
 }
 void XCOverview::mouseReleaseEvent(QMouseEvent *event){
 

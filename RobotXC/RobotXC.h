@@ -7,8 +7,9 @@
 #include "XCControl.h"
 #include "XCSimulateLaser.h"
 #include "stdafx.h"
-#define DODGESSTEPS 50			//闪避时刻中最低有效步数
+#define DODGESTEPS 20			//闪避时刻中最低有效步数
 #define SPEAKWORDSPERSECOND 4	//王静每秒钟阅读的字数
+
 class RobotXC : public QMainWindow{
 	Q_OBJECT
 public:
@@ -28,6 +29,8 @@ private:
 	int timer_instruction;				//指令计时器
 	int timer_data_refresh;				//数据刷新计时器
 	int m_speakWaitCycle;				//语音播报等待指令周期数
+	int dodgeMoveSetps;					//已经闪避的步数
+	int dodgeMode;						//闪避模式
 	std::list<XCPoint> m_result;		//存储A*计算器计算出的路径点列表
 	std::list<QPointF> m_result_f;		//存储A*计算器计算出的路径点的世界坐标
 	QPointF robotPos;				//机器人坐标(cm,cm)
@@ -36,7 +39,8 @@ private:
 	float faceAudianceAngle;		//面朝观众的角度(°)
 	bool isSimulateMode;			//是否是模拟模式
 	bool isAutoMode;				//是否是自动模式
-	bool isFastMode;
+	bool isFastMode;				//是否是快速模式
+	bool isDodgeMode;				//是否是闪避模式
 	bool LoadMap();							//读取地图
 	bool LoadTask();						//读取任务库
 	bool LoadSpeakContent();				//读取语料库
@@ -50,13 +54,17 @@ private:
 	void AssignInstruction();				//安排指令
 	void AssignPresetTask(int n);			//安排预设任务
 	void DataRefresh();						//数据刷新
-
+	void CommomMeasures();					//普通指令
+	void DodgeMeasures();					//闪避指令
+	void DodgeLeft();						//向左闪避
+	void DodgeRight();						//向右闪避
 	void GetResultF();				//依据m_result计算出m_result_f
 	XCTaskDataType* findTask(int taskId);
 	XCSpeakContentType* findSpeakContent(int speakContentId);
 private slots:
 	void OnBtnRecord();				//开始聆听
 	void OnBtnDisplayDilate();		//显示膨胀地图
+	void OnBtnSetDynamicBarrier();	//设置动态障碍
 public slots:
 	void OnBtnChangeSimulateMode();	//更改模拟模式
 	void OnBtnChangeAutoMode();		//更改自动模式
