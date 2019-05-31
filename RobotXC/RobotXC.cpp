@@ -407,7 +407,7 @@ void RobotXC::CommomMeasures(){
 				m_astar->Calculate(false,false);
 				float scoreWithoutDynamicObstacle = m_astar->GetScore();
 				if(scoreWithDynamicObstacle - scoreWithoutDynamicObstacle > 20){
-					QString str = "闪避费劲，请您让行！";
+					QString str = "我不想动了，请您让行！";
 					m_voice->Speak(str);
 					m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
 				}else{
@@ -417,7 +417,7 @@ void RobotXC::CommomMeasures(){
 						iter++;
 						QPointF d(iter->x - robotPos.x(),iter->y - robotPos.y());
 						float dAngle = Modf360(GetAngleFromVector(d));
-						if(dAngle>180){
+						if(dAngle<180){
 							dodgeMode = 1;	//左转
 						}else{
 							dodgeMode = 2;	//右转
