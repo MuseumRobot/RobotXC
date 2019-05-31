@@ -10,11 +10,11 @@ public:
 	~XCOverview();
 	XCMap* m_map;
 	XCConfig* m_config;
-	QPointF m_robotPos;
-	QPointF m_goalPos;
-	float m_robotFaceAngle;
+	QPointF* m_robotPos;
+	QPointF* m_goalPos;
+	float* m_robotFaceAngle;
 	QPoint m_mousePos;
-	std::list<XCPoint> m_result;
+	std::list<XCPoint>* m_result;
 	bool m_showDilateMap;
 private:
 	Ui::XCOverview ui;

@@ -46,6 +46,9 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	robotPos = QPointF(43.00,23.00);
 	goalPos = QPointF(142.0,160.0);
 	robotFaceAngle = 0.0;
+	m_overview->m_robotPos = &robotPos;
+	m_overview->m_goalPos = &goalPos;
+	m_overview->m_robotFaceAngle = &robotFaceAngle;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
 	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->obstacle_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
@@ -55,7 +58,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_map->y_end = goalPos.x()/m_config->architect_scale();
 	m_astar->Calculate(false);
 	m_result = m_astar->GetResultList();
-	m_overview->m_result = m_result;
+	m_overview->m_result = &m_result;
 	GetResultF();								//更新m_result_f以参与寻路计算
 
 	isSimulateMode = false;
@@ -143,8 +146,7 @@ void RobotXC::AssignPresetTask(int n){
 	}
 }
 void RobotXC::DataRefresh(){
-	m_overview->m_robotPos = robotPos;
-	m_overview->m_robotFaceAngle = robotFaceAngle;
+
 }
 void RobotXC::TrunForwardGoal(float goalAngle){
 	float deltaAngle = Modf360(goalAngle - robotFaceAngle);

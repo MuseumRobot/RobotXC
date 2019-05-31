@@ -3,11 +3,7 @@
 AStar::AStar(void){
 	currentPoint = NULL;
 }
-AStar::~AStar(void){
-	if(currentPoint!=NULL){
-		delete currentPoint;
-	}
-}
+AStar::~AStar(void){}
 
 std::list<XCPoint> AStar::GetResultList(){
 	return result;
