@@ -63,7 +63,10 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		for(int i=0;i<28;i++){
 			if(m_simulateLaserResult[i]<1000){
 				painter.setPen(QPen(Qt::black));
-				QPointF obsOfLaserPosByPixes(m_simulateLaserResult[i]*cosAngle((4+i)*5-70 + *m_robotFaceAngle)+robotPosByPixes.x(),m_simulateLaserResult[i]*sinAngle((4+i)*5-70 + *m_robotFaceAngle)+robotPosByPixes.y());
+				QPointF obsOfLaserPosByPixes(m_simulateLaserResult[i]/10/m_config->architect_scale()*m_config->map_scale()*cosAngle((i+0.5)*5 + *m_robotFaceAngle)+robotPosByPixes.x(),m_simulateLaserResult[i]/10/m_config->architect_scale()*m_config->map_scale()*sinAngle((i+0.5)*5 + *m_robotFaceAngle)+robotPosByPixes.y());
+				if(i>13){
+					obsOfLaserPosByPixes = QPointF(m_simulateLaserResult[i]/10/m_config->architect_scale()*m_config->map_scale()*cosAngle(-1*(i+0.5)*5 + 70 + *m_robotFaceAngle)+robotPosByPixes.x(),m_simulateLaserResult[i]/10/m_config->architect_scale()*m_config->map_scale()*sinAngle(-1*(i+0.5)*5 + 70 + *m_robotFaceAngle)+robotPosByPixes.y());
+				}				
 				painter.drawLine(robotPosByPixes,obsOfLaserPosByPixes);
 			}
 		}

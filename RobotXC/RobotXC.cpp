@@ -121,8 +121,14 @@ void RobotXC::AssignInstruction(){
 				float goalAngle = GetAngleFromVector(d);
 				if(Modf360(abs(goalAngle - robotFaceAngle))>errorRange_Angle){		
 					TrunForwardGoal(goalAngle);						//如果和目标角度差距大就先转向目标
-				}else{
-					MoveForward(1);									//转到想要的角度后就继续走
+				}else{	//转到想要的角度后就继续走
+					if(m_simulateLaser->isClear(m_config->far_obs_threshold())){
+						MoveForward(1);		//前方通畅
+					}else if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
+						MoveForward(0.8);	//前方通行
+					}else{	//前方有障碍
+
+					}
 				}
 			}else{													//如果已经抵达当前目标点，还需要转向观众
 				if(Modf360(abs(faceAudianceAngle - robotFaceAngle))>errorRange_Angle){		
@@ -152,7 +158,7 @@ void RobotXC::AssignPresetTask(int n){
 	}
 }
 void RobotXC::DataRefresh(){
-	//m_simulateLaser->CalculateSurroundStatus();
+	m_simulateLaser->CalculateSurroundStatus();
 }
 void RobotXC::TrunForwardGoal(float goalAngle){
 	float deltaAngle = Modf360(goalAngle - robotFaceAngle);
@@ -167,6 +173,7 @@ void RobotXC::TrunForwardGoal(float goalAngle){
 void RobotXC::TurnLeft(float ratio){
 	if(isSimulateMode){
 		robotFaceAngle -= ratio*m_config->speed_angle_basic_simulate();
+		robotFaceAngle = Modf360(robotFaceAngle);
 	}else{
 		//真实运动
 	}
@@ -174,6 +181,7 @@ void RobotXC::TurnLeft(float ratio){
 void RobotXC::TurnRight(float ratio){
 	if(isSimulateMode){
 		robotFaceAngle += ratio*m_config->speed_angle_basic_simulate();
+		robotFaceAngle = Modf360(robotFaceAngle);
 	}else{
 
 	}
@@ -213,7 +221,6 @@ void RobotXC::OnBtnRecord(){
 	//	m_overview->setFixedWidth(ui.overview->width());
 	//	m_overview->setFixedHeight(ui.overview->height());
 	//}
-	m_simulateLaser->CalculateSurroundStatus();
 }
 bool RobotXC::LoadMap(){
 	QString filepath = "./Configure/museum.map";

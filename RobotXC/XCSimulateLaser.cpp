@@ -17,12 +17,14 @@ void XCSimulateLaser::CalculateSurroundStatus(){
 				QPointF obs((i+0.5)*m_config->architect_scale(),(j+0.5)*m_config->architect_scale());
 				QPointF d(obs.x()-m_robotPos->x(),obs.y()-m_robotPos->y());
 				float obsAngle = GetAngleFromVector(d);
-				float dAngle = obsAngle - *m_robotFaceAngle;
-				if(Modf360(abs(dAngle)) < 70){
-					if(Modf360(dAngle<70)){
-						laserResult[(int)dAngle/5] = 10*GetDistanceFromVector(d);
+				float dAngle = Modf360(obsAngle - *m_robotFaceAngle);
+				if(dAngle < 70 || dAngle > 290){
+					if(dAngle < 70){
+						if(10*GetDistanceFromVector(d)<laserResult[(int)dAngle/5])
+							laserResult[(int)dAngle/5] = 10*GetDistanceFromVector(d);
 					}else{
-						laserResult[(int)(dAngle-220)/5] = 10*GetDistanceFromVector(d);
+						if(10*GetDistanceFromVector(d)<laserResult[(int)(360-dAngle)/5+14])
+							laserResult[(int)(360-dAngle)/5+14] = 10*GetDistanceFromVector(d);
 					}
 				}
 			}
@@ -30,6 +32,7 @@ void XCSimulateLaser::CalculateSurroundStatus(){
 	}
 }
 bool XCSimulateLaser::isClear(float dist){
+	CalculateSurroundStatus();
 	bool flag = true;
 	for(int i=5;i<21;i++){
 		if(laserResult[i]<dist){
