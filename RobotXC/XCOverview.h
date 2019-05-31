@@ -2,7 +2,7 @@
 #include <QWidget>
 #include "ui_XCOverview.h"
 #include "stdafx.h"
-#define DYNAMICOBSTRACLELIFE 30	//动态障碍物生命周期
+#define DYNAMICOBSTRACLELIFE 50	//动态障碍物生命周期
 class XCOverview : public QWidget{
 	Q_OBJECT
 public:

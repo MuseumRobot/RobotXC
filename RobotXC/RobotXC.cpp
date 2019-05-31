@@ -58,12 +58,12 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_overview->m_simulateLaserResult = m_simulateLaser->laserResult;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
-	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->obstacle_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
+	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->fatal_obs_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
 	m_map->x_start = robotPos.y()/m_config->architect_scale();
 	m_map->y_start = robotPos.x()/m_config->architect_scale();
 	m_map->x_end = goalPos.y()/m_config->architect_scale();
 	m_map->y_end = goalPos.x()/m_config->architect_scale();
-	m_astar->Calculate(false);
+	m_astar->Calculate(false,false);
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = &m_result;
 	GetResultF();								//更新m_result_f以参与寻路计算
@@ -396,7 +396,39 @@ void RobotXC::CommomMeasures(){
 		}else if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
 			MoveForward(0.8);	//前方通行
 		}else{
-			isDodgeMode = true;
+			if(m_simulateLaser->isClear(m_config->fatal_obs_threshold())){
+				m_map->x_start = robotPos.y()/m_config->architect_scale();
+				m_map->y_start = robotPos.x()/m_config->architect_scale();
+				m_map->x_end = goalPos.y()/m_config->architect_scale();
+				m_map->y_end = goalPos.x()/m_config->architect_scale();
+				m_astar->Calculate(false,true);
+				m_result = m_astar->GetResultList();
+				float scoreWithDynamicObstacle = m_astar->GetScore();
+				m_astar->Calculate(false,false);
+				float scoreWithoutDynamicObstacle = m_astar->GetScore();
+				if(scoreWithDynamicObstacle - scoreWithoutDynamicObstacle > 20){
+					QString str = "闪避费劲，请您让行！";
+					m_voice->Speak(str);
+					m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
+				}else{
+					isDodgeMode = true;
+					if(m_result.size()>0){
+						std::list<XCPoint>::iterator iter = m_result.begin();
+						iter++;
+						QPointF d(iter->x - robotPos.x(),iter->y - robotPos.y());
+						float dAngle = Modf360(GetAngleFromVector(d));
+						if(dAngle>180){
+							dodgeMode = 1;	//左转
+						}else{
+							dodgeMode = 2;	//右转
+						}
+					}
+				}
+			}else{
+				QString str = "危险，请离开！";
+				m_voice->Speak(str);
+				m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
+			}
 		}
 	}
 }

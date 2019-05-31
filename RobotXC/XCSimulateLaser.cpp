@@ -68,3 +68,13 @@ bool XCSimulateLaser::isClear(float dist){
 	}
 	return flag;
 }
+bool XCSimulateLaser::isStaticClear(float dist){
+	CalculateSurroundStaticStatus();
+	bool flag = true;
+	for(int i=7;i<19;i++){
+		if(laserResult[i]<dist){
+			flag = false;
+		}
+	}
+	return flag;
+}

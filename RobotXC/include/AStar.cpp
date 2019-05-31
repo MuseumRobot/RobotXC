@@ -24,7 +24,8 @@ void AStar::Uninit(){
 	}
 	closelist.clear();
 }
-void AStar::Calculate(bool isIgnoreCornor){
+
+void AStar::Calculate(bool isIgnoreCornor,bool isWithDynamicObstacle){
 	//将起点加入open表
 	XCPoint* start = new XCPoint(m_map->x_start,m_map->y_start);
 	openlist.push_back(start);
@@ -36,7 +37,7 @@ void AStar::Calculate(bool isIgnoreCornor){
 			currentPoint = FindMinF(openlist);	//找到open表中F最小的点置为当前点
 			closelist.push_back(currentPoint);	//把当前点加入close表
 			openlist.remove(currentPoint);		//把当前节点从open表中删除
-			std::vector<XCPoint *> surroundPoints = getSurroundPoints(currentPoint,isIgnoreCornor);	//找到当前节点周围的可到达的格子
+			std::vector<XCPoint *> surroundPoints = getSurroundPoints(currentPoint,isIgnoreCornor,isWithDynamicObstacle);	//找到当前节点周围的可到达的格子
 			for(std::vector<XCPoint *>::iterator iter = surroundPoints.begin(); iter != surroundPoints.end(); iter++){
 				if(!isInList(openlist,(*iter))){
 					//如果这个节点不在open中则加入open并更新其GHF
@@ -67,6 +68,12 @@ void AStar::Calculate(bool isIgnoreCornor){
 			p = (*iter);
 		}
 	}
+	if(p != NULL){
+		m_Score = p->F;
+	}else{
+		m_Score = 10000;
+	}
+	result.clear();
 	while(p != NULL){
 		result.push_front(*p);
 		p = p->parent;
@@ -91,20 +98,25 @@ XCPoint* AStar::FindMinF(PointList& list){
 	}
 	return NULL;
 }
-std::vector<XCPoint *> AStar::getSurroundPoints(XCPoint *point,bool isIgnoreCorner){
+std::vector<XCPoint *> AStar::getSurroundPoints(XCPoint *point,bool isIgnoreCorner,bool isWithDynamicObstacle){
 	std::vector<XCPoint *> surroundPoints; 
 	for(int x = point->x-1;x <= point->x+1;x++) 
 		for(int y = point->y-1;y <= point->y+1;y++) 
-			if(isReachable(point,new XCPoint(x,y),isIgnoreCorner)) 
+			if(isReachable(point,new XCPoint(x,y),isIgnoreCorner,isWithDynamicObstacle))
 				surroundPoints.push_back(new XCPoint(x,y)); 
 	return surroundPoints;  
 }
-bool AStar::isReachable(XCPoint* p1, XCPoint* p2, bool isIgnoreCornor){
+bool AStar::isReachable(XCPoint* p1, XCPoint* p2, bool isIgnoreCornor,bool isWithDynamicObstacle){
 	bool flag;
 	if(p2->x < 0 || p2->y < 0 || p2->x > m_map->M-1 || p2->y > m_map->N-1 || m_map->m_dilate_maze[p2->x][p2->y] == 1 ||
-		isInList(closelist,p2) || p1->x == p2->x && p1->y == p2->y || m_map->m_dilate_dynamicObstacleLife[p2->x][p2->y] > 0){
+		isInList(closelist,p2) || p1->x == p2->x && p1->y == p2->y){
 		flag = false;
 	}else{
+		if(isWithDynamicObstacle){
+			if(m_map->m_dynamicObstacleLife[p2->x][p2->y] > 0){
+				return false;
+			}
+		}
 		if(abs(p1->x - p2->x) + abs(p1->y - p2->y) == 1){
 			flag = true;
 		}else{
@@ -160,4 +172,7 @@ std::vector<std::vector<int>> AStar::DilateMatrix(int n,std::vector<std::vector<
 		}
 	}
 	return dilate_maze;
+}
+int AStar::GetScore(){
+	return m_Score;
 }

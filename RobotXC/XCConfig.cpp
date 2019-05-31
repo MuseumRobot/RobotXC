@@ -52,6 +52,8 @@ bool XCConfig::LoadFromFile(const string &config_file){
 			obstacle_threshold_ = stoi(key_value[1]);
 		}else if (stricmp(key_value[0].c_str(),"far_obs_threshold") == 0){
 			far_obs_threshold_ = stoi(key_value[1]);
+		}else if (stricmp(key_value[0].c_str(),"fatal_obs_threshold") == 0){
+			fatal_obs_threshold_ = stoi(key_value[1]);
 		}else if (stricmp(key_value[0].c_str(),"error_angle") == 0){
 			error_angle_ = stof(key_value[1]);
 		}else if (stricmp(key_value[0].c_str(),"error_distance") == 0){
@@ -120,6 +122,9 @@ int XCConfig::obstacle_threshold(){
 }
 int XCConfig::far_obs_threshold(){
 	return far_obs_threshold_;
+}
+int XCConfig::fatal_obs_threshold(){
+	return fatal_obs_threshold_;
 }
 float XCConfig::error_angle(){
 	return error_angle_;

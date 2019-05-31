@@ -12,5 +12,6 @@ public:
 	void CalculateSurroundStaticStatus();
 	void CalculateSurroundStatus();
 	bool isClear(float dist);
+	bool isStaticClear(float dist);
 };
 
