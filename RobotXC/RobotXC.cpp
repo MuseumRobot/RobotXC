@@ -102,30 +102,28 @@ void RobotXC::TrunForwardGoal(){
 }
 void RobotXC::TurnLeft(float ratio){
 	if(isSimulateMode){
-		robotFaceAngle += ratio*m_config->speed_angle_basic_simulate();
+		robotFaceAngle -= ratio*m_config->speed_angle_basic_simulate();
 	}else{
 		//真实运动
 	}
 }
 void RobotXC::TurnRight(float ratio){
 	if(isSimulateMode){
-		robotFaceAngle -= ratio*m_config->speed_angle_basic_simulate();
+		robotFaceAngle += ratio*m_config->speed_angle_basic_simulate();
 	}else{
 
 	}
 }
 void RobotXC::MoveForward(float ratio){
 	if(isSimulateMode){
-		float a = cos(robotFaceAngle/360.0*2*PI);
-		float b = sin(robotFaceAngle/360.0*2*PI);
-		robotPos += QPointF(ratio*m_config->speed_line_basic_simulate()*cos(-1*(robotFaceAngle)/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(-1*robotFaceAngle/360.0*2*PI));
+		robotPos += QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
 }
 void RobotXC::MoveBackward(float ratio){
 	if(isSimulateMode){
-		robotPos -= QPointF(ratio*m_config->speed_line_basic_simulate()*cos(-1*robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(-1*robotFaceAngle/360.0*2*PI));
+		robotPos -= QPointF(ratio*m_config->speed_line_basic_simulate()*cos(robotFaceAngle/360.0*2*PI),ratio*m_config->speed_line_basic_simulate()*sin(robotFaceAngle/360.0*2*PI));
 	}else{
 
 	}
