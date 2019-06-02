@@ -26,10 +26,15 @@ void AStar::Uninit(){
 }
 
 void AStar::Calculate(bool isIgnoreCornor,bool isWithDynamicObstacle){
+	result.clear();	//清空结果表
 	//将起点加入open表
 	XCPoint* start = new XCPoint(m_map->x_start,m_map->y_start);
 	openlist.push_back(start);
 	XCPoint end(m_map->x_end,m_map->y_end);
+	if(m_map->m_dilate_maze[start->x][start->y] == 1 || m_map->m_dilate_dynamicObstacleLife[start->x][start->y] > 0
+		|| m_map->m_dilate_maze[end.x][end.y] == 1 || m_map->m_dilate_dynamicObstacleLife[end.x][end.y]>0){
+			return;	//如果起点和终点均不可达，则直接返回空结果，省去大批无效计算
+	}
 	do{
 		if(openlist.size() == 0){
 			break;
@@ -73,7 +78,6 @@ void AStar::Calculate(bool isIgnoreCornor,bool isWithDynamicObstacle){
 	}else{
 		m_Score = 10000;
 	}
-	result.clear();
 	while(p != NULL){
 		result.push_front(*p);
 		p = p->parent;
@@ -113,7 +117,7 @@ bool AStar::isReachable(XCPoint* p1, XCPoint* p2, bool isIgnoreCornor,bool isWit
 		flag = false;
 	}else{
 		if(isWithDynamicObstacle){
-			if(m_map->m_dynamicObstacleLife[p2->x][p2->y] > 0){
+			if(m_map->m_dilate_dynamicObstacleLife[p2->x][p2->y] > 0){
 				return false;
 			}
 		}
@@ -144,34 +148,6 @@ int AStar::CalG(XCPoint* p1, XCPoint * p2){
 int AStar::CalH(XCPoint* p){
 	float dist = sqrt(pow((float)(p->x - m_map->x_end),2)+pow((float)(p->y - m_map->y_end),2));
 	return dist * 10;
-}
-std::vector<std::vector<int>> AStar::DilateMatrix(int n,std::vector<std::vector<int>> originMatrix){
-	std::vector<std::vector<int>> dilate_maze;
-	dilate_maze.resize(m_map->M);
-	for(int i=0;i<m_map->M;i++){
-		dilate_maze[i].resize(m_map->N);
-	}
-	if(n == 0){
-		return originMatrix;
-	}else if(n > 0){
-		std::vector<std::vector<int>> pre_dilate_maze =  DilateMatrix(n-1,originMatrix);
-		for(int i=0;i<m_map->M;i++){
-			for(int j=0;j<m_map->N;j++){
-				if(pre_dilate_maze[i][j]>0){
-					for(int x=i-1;x<i+2;x++){
-						for(int y=j-1;y<j+2;y++){
-							if(x>-1 && y>-1 && x<m_map->M && y<m_map->N){
-								if(dilate_maze[x][y] == 0){
-									dilate_maze[x][y] = pre_dilate_maze[i][j];
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return dilate_maze;
 }
 int AStar::GetScore(){
 	return m_Score;

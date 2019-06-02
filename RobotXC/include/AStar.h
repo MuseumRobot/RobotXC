@@ -19,7 +19,6 @@ public:
 	void Init(XCMap* map);
 	void Uninit();					//释放openlist与closelist中的内存
 	void Calculate(bool isIgnoreCornor,bool isWithDynamicObstacle);
-	std::vector<std::vector<int>> DilateMatrix(int n,std::vector<std::vector<int>> originMatrix);
 private:
 	XCPoint* isInList(PointList& list,XCPoint *point);	//判断list中是否含有某点
 	XCPoint* FindMinF(PointList& list);

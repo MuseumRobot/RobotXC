@@ -58,7 +58,7 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_overview->m_simulateLaserResult = m_simulateLaser->laserResult;
 	m_astar->Init(m_map);
 	//实际应用时地图需要膨胀,存在m_dilate_maze中,而原图存在m_maze矩阵中保存
-	m_astar->m_map->m_dilate_maze = m_astar->DilateMatrix(m_config->fatal_obs_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
+	m_astar->m_map->m_dilate_maze = DilateMatrix(m_config->fatal_obs_threshold()/10/m_config->architect_scale(),m_map->m_maze);	
 	m_map->x_start = robotPos.y()/m_config->architect_scale();
 	m_map->y_start = robotPos.x()/m_config->architect_scale();
 	m_map->x_end = goalPos.y()/m_config->architect_scale();
@@ -66,15 +66,13 @@ RobotXC::RobotXC(QWidget *parent, Qt::WFlags flags):QMainWindow(parent, flags){
 	m_astar->Calculate(false,false);
 	m_result = m_astar->GetResultList();
 	m_overview->m_result = &m_result;
-	GetResultF();								//更新m_result_f以参与寻路计算
-
 	isSimulateMode = false;
 	isAutoMode = false;
 	isFastMode = false;
 	isDodgeMode = false;
 	m_speakWaitCycle = 0;
 	dodgeMoveSetps = 0;
-	dodgeMode = 0;
+	dodgeMethod = 0;
 	m_control->ParseTaskSequence("1,22,2,23,24,3,25,26,4,27,5,28,29,6,30,7,31,76");
 
 }
@@ -115,6 +113,9 @@ void RobotXC::timerEvent(QTimerEvent *event){
 			for(int j=0;j<m_map->N;j++){
 				if(m_map->m_dynamicObstacleLife[i][j]>0){
 					m_map->m_dynamicObstacleLife[i][j] --;
+				}
+				if(m_map->m_dynamicObstacleLife[i][j]>0){
+					m_map->m_dilate_dynamicObstacleLife[i][j] --;
 				}
 			}
 		}
@@ -321,13 +322,6 @@ void RobotXC::OnBtnHome(){
 	AssignPresetTask(0);
 	m_voice->Speak("已切换至回家路线！");
 }
-void RobotXC::GetResultF(){
-	//坐标变换：方格以行列论(m行,n列)，转为overview下的坐标系(x,y)，x=n*map_scale,y=m*map_scale
-	for(std::list<XCPoint>::iterator iter = m_result.begin(); iter != m_result.end(); iter++){
-		QPointF a((iter->y + 0.5)*m_config->map_scale(),(iter->x + 0.5)*m_config->map_scale());
-		m_result_f.push_back(a);
-	}
-}
 bool RobotXC::LoadTask(){
 	FILE* fp = fopen("Configure/task.data","rb");
 	if(!fp) return false;
@@ -388,6 +382,7 @@ void RobotXC::CommomMeasures(){
 	QPointF d = goalPos - robotPos;
 	float errorRange_Angle = m_config->error_angle();		//选择角度的误差范围，单位°
 	float goalAngle = GetAngleFromVector(d);
+	float dAngle = 0.0;
 	if(Modf360(abs(goalAngle - robotFaceAngle))>errorRange_Angle){		
 		TrunForwardGoal(goalAngle);						//如果和目标角度差距大就先转向目标
 	}else{	//转到想要的角度后就继续走
@@ -396,57 +391,39 @@ void RobotXC::CommomMeasures(){
 		}else if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
 			MoveForward(0.8);	//前方通行
 		}else{
-			if(m_simulateLaser->isClear(m_config->fatal_obs_threshold())){
-				m_map->x_start = robotPos.y()/m_config->architect_scale();
-				m_map->y_start = robotPos.x()/m_config->architect_scale();
-				m_map->x_end = goalPos.y()/m_config->architect_scale();
-				m_map->y_end = goalPos.x()/m_config->architect_scale();
-				m_astar->Calculate(false,true);
-				m_result = m_astar->GetResultList();
-				float scoreWithDynamicObstacle = m_astar->GetScore();
-				m_astar->Calculate(false,false);
-				float scoreWithoutDynamicObstacle = m_astar->GetScore();
-				if(scoreWithDynamicObstacle - scoreWithoutDynamicObstacle > 20){
+			//if(m_simulateLaser->isClear(m_config->fatal_obs_threshold())){
+				if(JudgeWhetherEnterDodgeModeOrShoutOut() == false){
 					QString str = "我不想动了，请您让行！";
 					m_voice->Speak(str);
 					m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
 				}else{
 					isDodgeMode = true;
-					if(m_result.size()>0){
-						std::list<XCPoint>::iterator iter = m_result.begin();
-						iter++;
-						QPointF d(iter->x - robotPos.x(),iter->y - robotPos.y());
-						float dAngle = Modf360(GetAngleFromVector(d));
-						if(dAngle<180){
-							dodgeMode = 1;	//左转
-						}else{
-							dodgeMode = 2;	//右转
-						}
-					}
+					GetAstarResult(false,true);
+					dodgeMethod = GetDodgeMethodByAstar();
 				}
-			}else{
-				QString str = "危险，请离开！";
-				m_voice->Speak(str);
-				m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
-			}
+			//}else{
+			//	QString str = "危险，请离开！";
+			//	m_voice->Speak(str);
+			//	m_speakWaitCycle = str.length()/SPEAKWORDSPERSECOND*1000/m_config->instruction_cycle()+10;
+			//}
 		}
 	}
 }
 void RobotXC::DodgeMeasures(){
-	if((m_simulateLaser->isClear(m_config->obstacle_threshold()) == true && dodgeMoveSetps > DODGESTEPS * 0.6) || dodgeMoveSetps > DODGESTEPS){
+	if((m_simulateLaser->isClear(m_config->obstacle_threshold()) == true && dodgeMoveSetps > DODGESTEPS * 0.5) || dodgeMoveSetps > DODGESTEPS){
 		isDodgeMode = false;				//超出闪避有效步数后，如果当前前路通畅，则退出闪避时刻
 		dodgeMoveSetps = 0;					
-		dodgeMode = 0;						//闪避模式为0时可以接受新的闪避倾向策略
+		dodgeMethod = 0;						//闪避模式为0时可以接受新的闪避倾向策略
 	}else{
 		float d = Modf360(GetAngleFromVector(goalPos-robotPos) - robotFaceAngle);
-		if(dodgeMode == 0){
+		if(dodgeMethod == 0){
 			if(d>180.0){
-				dodgeMode = 1;	//目标在当前朝向的左手边则向左避障
+				dodgeMethod = 1;	//目标在当前朝向的左手边则向左避障
 			}else{
-				dodgeMode = 2;	//目标在当前朝向的右手边则向右避障
+				dodgeMethod = 2;	//目标在当前朝向的右手边则向右避障
 			}
 		}
-		if(dodgeMode == 1){
+		if(dodgeMethod == 1){
 			DodgeLeft();	
 		}else{
 			DodgeRight();	
@@ -457,6 +434,8 @@ void RobotXC::DodgeLeft(){
 	if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
 		MoveForward(1);		//在向左转到前方无障碍时前进一步
 		dodgeMoveSetps++;		//只有在躲避时刻中进行push操作才是有效操作，原地转圈没啥用
+		m_result = GetAstarResult(false,true);
+		dodgeMethod = GetDodgeMethodByAstar();
 	}else{
 		TurnLeft(1);
 	}
@@ -465,7 +444,49 @@ void RobotXC::DodgeRight(){
 	if(m_simulateLaser->isClear(m_config->obstacle_threshold())){
 		MoveForward(1);		//在向左转到前方无障碍时前进一步
 		dodgeMoveSetps++;		//只有在躲避时刻中进行push操作才是有效操作，原地转圈没啥用
+		m_result = GetAstarResult(false,true);
+		dodgeMethod = GetDodgeMethodByAstar();
 	}else{
 		TurnRight(1);
 	}
+}
+bool RobotXC::JudgeWhetherEnterDodgeModeOrShoutOut(){
+	bool flag;
+	m_result = GetAstarResult(false,true);
+	float scoreWithDynamicObstacle = m_astar->GetScore();
+	GetAstarResult(false,false);
+	float scoreWithoutDynamicObstacle = m_astar->GetScore();
+	if(scoreWithDynamicObstacle - scoreWithoutDynamicObstacle > 50){
+		flag = false;
+	}else{
+		flag = true;
+	}
+	return flag;
+}
+std::list<XCPoint> RobotXC::GetAstarResult(bool isIgnoreCorner, bool isWithDynamicObstacle){
+	m_map->x_start = robotPos.y()/m_config->architect_scale();
+	m_map->y_start = robotPos.x()/m_config->architect_scale();
+	m_map->x_end = goalPos.y()/m_config->architect_scale();
+	m_map->y_end = goalPos.x()/m_config->architect_scale();
+	m_astar->Calculate(isIgnoreCorner,isWithDynamicObstacle);
+	return m_astar->GetResultList();
+}
+int RobotXC::GetDodgeMethodByAstar(){
+	int method = 0;
+	float dAngle;
+	if(m_result.size()>0){
+		std::list<XCPoint>::iterator iter = m_result.begin();
+		do{
+			iter++;
+			if(iter == m_result.end()) break;
+			QPointF d1((iter->y+0.5)*m_config->architect_scale() - robotPos.x(),(iter->x+0.5)*m_config->architect_scale() - robotPos.y());
+			dAngle = Modf360(GetAngleFromVector(d1) - robotFaceAngle);
+			if(dAngle<180){
+				method = 2;
+			}else if(dAngle>180){
+				method = 1;
+			}
+		}while(method == 0);
+	}
+	return method;
 }

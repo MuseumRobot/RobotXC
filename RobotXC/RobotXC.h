@@ -7,7 +7,7 @@
 #include "XCControl.h"
 #include "XCSimulateLaser.h"
 #include "stdafx.h"
-#define DODGESTEPS 20			//闪避时刻中最低有效步数
+#define DODGESTEPS 8			//闪避时刻中最低有效步数
 #define SPEAKWORDSPERSECOND 4	//王静每秒钟阅读的字数
 
 class RobotXC : public QMainWindow{
@@ -30,9 +30,8 @@ private:
 	int timer_data_refresh;				//数据刷新计时器
 	int m_speakWaitCycle;				//语音播报等待指令周期数
 	int dodgeMoveSetps;					//已经闪避的步数
-	int dodgeMode;						//闪避模式
+	int dodgeMethod;					//闪避方向(0待定,1左,2右)
 	std::list<XCPoint> m_result;		//存储A*计算器计算出的路径点列表
-	std::list<QPointF> m_result_f;		//存储A*计算器计算出的路径点的世界坐标
 	QPointF robotPos;				//机器人坐标(cm,cm)
 	QPointF goalPos;				//目标坐标(cm,cm)
 	float robotFaceAngle;			//机器人朝向角(°)
@@ -44,7 +43,9 @@ private:
 	bool LoadMap();							//读取地图
 	bool LoadTask();						//读取任务库
 	bool LoadSpeakContent();				//读取语料库
+	bool JudgeWhetherEnterDodgeModeOrShoutOut();	//判断是进入闪避模式还是喊人离开
 	int JudgeTaskType(int taskID);			//判断当前任务类型，位移为0，语音为1
+	int GetDodgeMethodByAstar();			//通过A*获取闪避方向
 	void timerEvent(QTimerEvent *event);	//计时器循环函数
 	void TrunForwardGoal(float goalAngle);	//朝向目标
 	void TurnLeft(float ratio);				//左转
@@ -58,7 +59,7 @@ private:
 	void DodgeMeasures();					//闪避指令
 	void DodgeLeft();						//向左闪避
 	void DodgeRight();						//向右闪避
-	void GetResultF();				//依据m_result计算出m_result_f
+	std::list<XCPoint> GetAstarResult(bool isIgnoreCorner, bool isWithDynamicObstacle);
 	XCTaskDataType* findTask(int taskId);
 	XCSpeakContentType* findSpeakContent(int speakContentId);
 private slots:

@@ -36,6 +36,9 @@ void XCOverview::paintEvent(QPaintEvent *event){
 					if(m_map->m_dilate_maze[i][j] == 1){
 						painter.setBrush(QColor(100,100,100));
 						painter.drawRect(r);
+					}else if(m_map->m_dilate_dynamicObstacleLife[i][j]>0){
+						painter.setBrush(QColor(100,0,0));
+						painter.drawRect(r);
 					}else{
 						painter.setBrush(QColor(220,220,220));
 						painter.drawRect(r);
@@ -43,15 +46,18 @@ void XCOverview::paintEvent(QPaintEvent *event){
 				}
 			}
 		}
+		//绘制A*路径及起止点
+		for(std::list<XCPoint>::iterator iter = m_result->begin(); iter != m_result->end(); iter++){
+			//painter.setBrush(QColor(0,0,255,150));
+			//painter.drawRect(QRect(x0+w*iter->y,y0+h*iter->x,w,h));
+			painter.drawImage(QRect(x0+w*iter->y,y0+h*iter->x,w,h),QImage("Resources/foot.png"));
+		}
 		if(m_map->x_start>-1&&m_map->y_start>-1){
 			painter.drawImage(QRect(x0+w*m_map->y_start,y0+h*m_map->x_start,w,h),QImage("Resources/start.png"));
 		}
 		if(m_map->x_end>-1&&m_map->y_end>-1){
 			painter.drawImage(QRect(x0+w*m_map->y_end,y0+h*m_map->x_end,w,h),QImage("Resources/end.png"));
 		}
-		for(std::list<XCPoint>::iterator iter = m_result->begin(); iter != m_result->end(); iter++) 
-			painter.drawImage(QRect(x0+w*iter->y,y0+h*iter->x,w,h),QImage("Resources/foot.png"));
-
 		//绘制机器人本体位置朝向
 		QPointF robotPosByPixes(m_robotPos->x()/m_config->architect_scale()*m_config->map_scale(),m_robotPos->y()/m_config->architect_scale()*m_config->map_scale());
 		QMatrix matrix;
@@ -64,6 +70,7 @@ void XCOverview::paintEvent(QPaintEvent *event){
 		painter.drawPie(QRect(robotPosByPixes.x()-m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale(),robotPosByPixes.y()-m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale(),m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale()*2,m_config->map_scale()*m_config->obstacle_threshold()/10/m_config->architect_scale()*2),((360-*m_robotFaceAngle)-70)*16,140*16);
 		painter.setBrush(QColor(0,255,0,50));
 		painter.drawPie(QRect(robotPosByPixes.x()-m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale(),robotPosByPixes.y()-m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale(),m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale()*2,m_config->map_scale()*m_config->far_obs_threshold()/10/m_config->architect_scale()*2),((360-*m_robotFaceAngle)-70)*16,140*16);
+		//绘制虚拟激光
 		for(int i=0;i<28;i++){
 			if(m_simulateLaserResult[i]<1000){
 				painter.setPen(QPen(Qt::black));
@@ -105,6 +112,8 @@ void XCOverview::mousePressEvent(QMouseEvent *event){
 				for(int j=y-1;j<y+2;j++){
 					if(j<0) continue;
 					m_map->m_dynamicObstacleLife[i][j] = DYNAMICOBSTRACLELIFE;
+					//m_map->m_dynamicObstacleLife[x][y] = DYNAMICOBSTRACLELIFE;
+					m_map->m_dilate_dynamicObstacleLife = DilateMatrix(m_config->fatal_obs_threshold()/10/m_config->architect_scale(),m_map->m_dynamicObstacleLife);
 				}
 			}
 		}
