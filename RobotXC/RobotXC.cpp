@@ -452,10 +452,10 @@ void RobotXC::DodgeRight(){
 }
 bool RobotXC::JudgeWhetherEnterDodgeModeOrShoutOut(){
 	bool flag;
-	m_result = GetAstarResult(false,true);
-	float scoreWithDynamicObstacle = m_astar->GetScore();
 	GetAstarResult(false,false);
 	float scoreWithoutDynamicObstacle = m_astar->GetScore();
+	m_result = GetAstarResult(false,true);
+	float scoreWithDynamicObstacle = m_astar->GetScore();
 	if(scoreWithDynamicObstacle - scoreWithoutDynamicObstacle > 50){
 		flag = false;
 	}else{
